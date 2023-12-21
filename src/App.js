@@ -30,7 +30,7 @@ function App() {
           setMarkdownResult={setMarkdownResult}
         />
       </div>
-      <div style={{ marginTop: "16px" }}>
+      <div>
         <TextList
           onCodeChange={handleCodeChange}
           markdownResult={markdownResult}

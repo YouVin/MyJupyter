@@ -9,7 +9,9 @@ function TextList({ onCodeChange, markdownResult }) {
   // const [newResultItemText, setNewResultItemText] = useState("");
 
   const inputStyle = {
-    height: "40px",
+    minHeight: "40px", // 최소 높이 설정
+    overflow: "auto", // 내용이 넘칠 경우 스크롤바 표시
+    resize: "vertical", // 수직 크기 조절만 허용
   };
   const handleTextFieldChange = (e) => {
     const value = e.target.value;
@@ -35,6 +37,7 @@ function TextList({ onCodeChange, markdownResult }) {
           {/* 코드 작성할 리스트 아이템 */}
           <TextField
             fullWidth
+            multiline
             variant="outlined"
             label="Code"
             value={newCodeItemText}
@@ -44,7 +47,7 @@ function TextList({ onCodeChange, markdownResult }) {
         </ListItem>
         <ListItem>
           {/* 두 번째 아이템: 변환된 마크다운 텍스트 */}
-          {markdownResult}
+          <div dangerouslySetInnerHTML={{ __html: markdownResult }} />
         </ListItem>
       </List>
     </Paper>
