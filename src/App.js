@@ -21,7 +21,7 @@ function App() {
       <AppBar position="static" style={{ padding: "8px 16px" }}>
         <TopBar />
       </AppBar>
-      <div style={{ padding: "0px 16px", marginTop: "8px" }}>
+      <div style={{ padding: "0px 10px", marginTop: "8px" }}>
         <NotebookMenuBar />
       </div>
       <div style={{ padding: "0px 10px" }}>

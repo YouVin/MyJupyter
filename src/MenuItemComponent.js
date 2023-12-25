@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, MenuItem, IconButton, Toolbar, Menu } from "@mui/material";
+import {
+  Button,
+  MenuItem,
+  IconButton,
+  Select,
+  Toolbar,
+  Menu,
+} from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -8,25 +15,22 @@ import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { marked } from "marked";
 
 function MenuItemComponent({ inputText, setMarkdownResult }) {
-  // const [anchorEl, setAnchorEl] = useState(null);
-  // const [currentPage, setCurrentPage] = useState("markdown");
-  // const [inputText, setInputText] = useState("");
-  // const [result, setResult] = useState(""); // 결과값 저장
+  const [selectedLanguage, setSelectedLanguage] = useState("markdown"); // 드롭다운에서 선택된 언어 상태
 
   const handleConvertClick = () => {
-    // 간단히 marked 라이브러리를 사용하여 텍스트를 마크다운으로 변환합니다.
-    const convertedMarkdown = marked(inputText);
-    console.log(convertedMarkdown);
-    setMarkdownResult(convertedMarkdown);
+    // 선택된 언어에 따라 inputText를 변환
+    if (selectedLanguage === "markdown") {
+      const convertedMarkdown = marked(inputText);
+      setMarkdownResult(convertedMarkdown);
+    } else if (selectedLanguage === "javascript") {
+      // 자바스크립트 변환 로직을 추가 (여기서는 간단한 예제로 표시)
+      // ... (원하는 변환 로직 추가)
+      setMarkdownResult(inputText); // 간단히 inputText를 설정하도록 예제로 작성
+    }
   };
-
-  // const handleInputChange = (event) => {
-  //   setInputText(event.target.value);
-  // };
 
   return (
     <div>
@@ -123,55 +127,20 @@ function MenuItemComponent({ inputText, setMarkdownResult }) {
             style={{ fontSize: "15px" }}
           />
         </IconButton>
-        {/* <div style={{ padding: "0px 10px" }}>
-            {
-              <Button
-                aria-controls="dropdown-menu"
-                aria-haspopup="true"
-                variant="outlined"
-                //onClick={handleClick}
-                style={{
-                  marginLeft: "10px",
-                  padding: "0px 0px",
-                  fontSize: "12px",
-                  border: "none",
-                  outline: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "black",
-                }}
-                endIcon={<ArrowDropDownIcon />}
-              >
-                {currentPage === "markdown" ? "MarkDown" : "Code"}
-              </Button>
-            }
-            {
-              <Menu
-                id="dropdown-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem
-                  value="markdown"
-                  onClick={() =>
-                    handlePageChange({ target: { value: "markdown" } })
-                  }
-                >
-                  <span style={{ marginRight: "5px" }}>MarkDown</span>
-                </MenuItem>
-                <MenuItem
-                  value="code"
-                  onClick={() =>
-                    handlePageChange({ target: { value: "code" } })
-                  }
-                >
-                  <span style={{ marginRight: "5px" }}>Code</span>
-                </MenuItem>
-              </Menu>
-            }
-          </div> */}
+        {
+          <div style={{ padding: "0px 10px" }}>
+            <Select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              style={{ marginLeft: "10px", backgroundColor: "white" }}
+            >
+              <MenuItem value="markdown">Markdown</MenuItem>
+              <MenuItem value="javascript">JavaScript</MenuItem>
+            </Select>
+
+            {/* 변환 버튼 */}
+          </div>
+        }
       </Toolbar>
     </div>
   );
