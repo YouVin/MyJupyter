@@ -17,21 +17,29 @@ import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { marked } from "marked";
 
+const vm = require("vm"); // vm 모듈 임포트
+
 function MenuItemComponent({ inputText, setMarkdownResult }) {
   const [selectedLanguage, setSelectedLanguage] = useState("markdown"); // 드롭다운에서 선택된 언어 상태
 
   const handleConvertClick = () => {
-    // 선택된 언어에 따라 inputText를 변환
     if (selectedLanguage === "markdown") {
       const convertedMarkdown = marked(inputText);
       setMarkdownResult(convertedMarkdown);
     } else if (selectedLanguage === "javascript") {
-      // 자바스크립트 변환 로직을 추가 (여기서는 간단한 예제로 표시)
-      // ... (원하는 변환 로직 추가)
-      setMarkdownResult(inputText); // 간단히 inputText를 설정하도록 예제로 작성
+      try {
+        const context = {
+          result: null,
+        };
+        const result = vm.runInNewContext(String(inputText), context);
+        setMarkdownResult(result);
+      } catch (error) {
+        setMarkdownResult(
+          `Error occurred while evaluating JavaScript: ${error.message}`
+        );
+      }
     }
   };
-
   return (
     <div>
       <Toolbar>

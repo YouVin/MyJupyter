@@ -1,6 +1,11 @@
 // TextList.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, ListItem, Paper, TextField } from "@mui/material";
+import hljs from "highlight.js";
+import "highlight.js/styles/default.css";
+import javascript from "highlight.js/lib/languages/javascript"; // 원하는 언어의 highlight 추가
+
+hljs.registerLanguage("javascript", javascript); // 언어 등록
 
 function TextList({ onCodeChange, markdownResult }) {
   // const [codeItems, setCodeItems] = useState([]);
@@ -9,15 +14,20 @@ function TextList({ onCodeChange, markdownResult }) {
   // const [newResultItemText, setNewResultItemText] = useState("");
 
   const inputStyle = {
-    minHeight: "40px", // 최소 높이 설정
-    overflow: "auto", // 내용이 넘칠 경우 스크롤바 표시
-    resize: "vertical", // 수직 크기 조절만 허용
+    minHeight: "40px",
+    overflow: "auto",
+    resize: "vertical",
   };
+
   const handleTextFieldChange = (e) => {
     const value = e.target.value;
-    setNewCodeItemText(value); // 상태 업데이트
-    console.log(value);
-    onCodeChange(value); // 상위 컴포넌트로 값을 전달
+    setNewCodeItemText(value);
+    onCodeChange(value);
+  };
+
+  const highlightAndRemoveTags = (text) => {
+    const highlighted = hljs.highlight("javascript", text).value;
+    return highlighted.replace(/<\/?[^>]+(>|$)/g, ""); // HTML 태그 제거
   };
 
   // const onAddCodeItem = (newText) => {
@@ -40,7 +50,7 @@ function TextList({ onCodeChange, markdownResult }) {
             multiline
             variant="outlined"
             label="Code"
-            value={newCodeItemText}
+            value={highlightAndRemoveTags(newCodeItemText)}
             onChange={handleTextFieldChange}
             InputProps={{ style: inputStyle }}
           />
