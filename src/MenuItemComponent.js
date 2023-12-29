@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  Button,
-  MenuItem,
-  IconButton,
-  Select,
-  Toolbar,
-  Menu,
-} from "@mui/material";
+import React from "react";
+import { MenuItem, IconButton, Select, Toolbar } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -19,9 +12,12 @@ import { marked } from "marked";
 
 const vm = require("vm"); // vm 모듈 임포트
 
-function MenuItemComponent({ inputText, setMarkdownResult }) {
-  const [selectedLanguage, setSelectedLanguage] = useState("markdown"); // 드롭다운에서 선택된 언어 상태
-
+function MenuItemComponent({
+  inputText,
+  setMarkdownResult,
+  selectedLanguage,
+  setSelectedLanguage,
+}) {
   const handleConvertClick = () => {
     if (selectedLanguage === "markdown") {
       const convertedMarkdown = marked(inputText);
@@ -139,7 +135,9 @@ function MenuItemComponent({ inputText, setMarkdownResult }) {
           <div style={{ padding: "0px 10px" }}>
             <Select
               value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
+              onChange={(e) => {
+                setSelectedLanguage(e.target.value); // 언어 변경시 상태 업데이트
+              }}
               style={{ marginLeft: "10px", backgroundColor: "white" }}
             >
               <MenuItem value="markdown">Markdown</MenuItem>

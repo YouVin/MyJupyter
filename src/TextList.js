@@ -1,59 +1,78 @@
-// TextList.js
 import React, { useState, useEffect } from "react";
 import { List, ListItem, Paper, TextField } from "@mui/material";
-import hljs from "highlight.js";
-import "highlight.js/styles/default.css";
-import javascript from "highlight.js/lib/languages/javascript"; // 원하는 언어의 highlight 추가
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-javascript"; // JavaScript 모드 임포트
+import "ace-builds/src-noconflict/theme-github"; // GitHub 테마 임포트
 
-hljs.registerLanguage("javascript", javascript); // 언어 등록
-
-function TextList({ onCodeChange, markdownResult }) {
-  // const [codeItems, setCodeItems] = useState([]);
+function TextList({ onCodeChange, markdownResult, selectedLanguage }) {
   const [newCodeItemText, setNewCodeItemText] = useState("");
-  // const [resultItems, setResultItems] = useState([]);
-  // const [newResultItemText, setNewResultItemText] = useState("");
 
   const inputStyle = {
     minHeight: "40px",
     overflow: "auto",
     resize: "vertical",
   };
+  useEffect(() => {
+    // selectedLanguage가 변경될 때마다 newCodeItemText 초기화
+    setNewCodeItemText("");
+  }, [selectedLanguage]);
 
+  //markdown 텍스트필드
   const handleTextFieldChange = (e) => {
     const value = e.target.value;
     setNewCodeItemText(value);
     onCodeChange(value);
   };
+  //javascript aditor필드
+  const handleEditorChange = (newValue) => {
+    setNewCodeItemText(newValue);
 
-  const highlightAndRemoveTags = (text) => {
-    const highlighted = hljs.highlight("javascript", text).value;
-    return highlighted.replace(/<\/?[^>]+(>|$)/g, ""); // HTML 태그 제거
+    // AceEditor의 높이를 자동으로 조절
+    const lines = newValue.split("\n").length;
+    const lineHeight = 20; // 기본적인 한 줄의 높이
+    const newHeight = lines * lineHeight;
+
+    // AceEditor의 높이를 조절하기 위한 로직
+    const aceEditor = document.querySelector(".ace_editor");
+    if (aceEditor) {
+      aceEditor.style.height = `${newHeight}px`;
+    }
   };
-
-  // const onAddCodeItem = (newText) => {
-  //   setCodeItems([...codeItems, newText]);
-  // };
-
-  // const onUpdateCodeItem = (index, newText) => {
-  //   const updatedItems = [...codeItems];
-  //   updatedItems[index] = newText;
-  //   setCodeItems(updatedItems);
-  // };
+  // selectedLanguage가 변경될 때 markdownResult 초기화
 
   return (
     <Paper elevation={3} style={{ padding: "16px", backgroundColor: "white" }}>
       <List>
         <ListItem>
           {/* 코드 작성할 리스트 아이템 */}
-          <TextField
-            fullWidth
-            multiline
-            variant="outlined"
-            label="Code"
-            value={highlightAndRemoveTags(newCodeItemText)}
-            onChange={handleTextFieldChange}
-            InputProps={{ style: inputStyle }}
-          />
+          {selectedLanguage === "markdown" ? (
+            <TextField
+              fullWidth
+              multiline
+              variant="outlined"
+              label="Markdown Code"
+              value={newCodeItemText}
+              onChange={handleTextFieldChange}
+              InputProps={{ style: inputStyle }}
+            />
+          ) : selectedLanguage === "javascript" ? (
+            <AceEditor
+              mode="javascript"
+              theme="github"
+              onChange={handleEditorChange}
+              value={newCodeItemText}
+              fontSize={14}
+              showPrintMargin={true}
+              showGutter={true}
+              highlightActiveLine={true}
+              setOptions={{
+                showLineNumbers: true,
+                tabSize: 2,
+                useWorker: false,
+              }}
+              style={{ width: "100%", height: "16px", overflow: "hidden" }}
+            />
+          ) : null}
         </ListItem>
         <ListItem style={{ padding: "10px 20px" }}>
           {/* 두 번째 아이템: 변환된 마크다운 텍스트 */}

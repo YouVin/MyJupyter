@@ -11,6 +11,7 @@ import "./App.css";
 function App() {
   const [inputText, setInputText] = useState(""); // MenuItemComponent로 전달될 상태
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
+  const [selectedLanguage, setSelectedLanguage] = useState("markdown"); // 기본값을 markdown으로 설정
 
   const handleCodeChange = (codeValue) => {
     setInputText(codeValue);
@@ -28,12 +29,15 @@ function App() {
         <MenuItemComponent
           inputText={inputText}
           setMarkdownResult={setMarkdownResult}
+          selectedLanguage={selectedLanguage} // selectedLanguage 전달
+          setSelectedLanguage={setSelectedLanguage} // 언어 변경 함수 전달
         />
       </div>
       <div>
         <TextList
           onCodeChange={handleCodeChange}
           markdownResult={markdownResult}
+          selectedLanguage={selectedLanguage} // TextList 컴포넌트에 selectedLanguage 전달
         />
       </div>
     </Container>
