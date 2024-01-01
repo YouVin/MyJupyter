@@ -2,16 +2,20 @@ import React, { useState, useEffect } from "react";
 import { List, ListItem, Paper, TextField } from "@mui/material";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript"; // JavaScript 모드 임포트
-import "ace-builds/src-noconflict/theme-github"; // GitHub 테마 임포트
+import "ace-builds/src-noconflict/theme-xcode"; // xcode 테마 임포트
+import "ace-builds/src-noconflict/ext-language_tools";
 
+//onCodeChang = 사용자입력값, markdownResult=결과값, selectedLanguage = 선택언어
 function TextList({ onCodeChange, markdownResult, selectedLanguage }) {
   const [newCodeItemText, setNewCodeItemText] = useState("");
 
+  //TextField css
   const inputStyle = {
     minHeight: "40px",
     overflow: "auto",
     resize: "vertical",
   };
+
   useEffect(() => {
     // selectedLanguage가 변경될 때마다 newCodeItemText 초기화
     setNewCodeItemText("");
@@ -25,8 +29,9 @@ function TextList({ onCodeChange, markdownResult, selectedLanguage }) {
   };
   //javascript aditor필드
   const handleEditorChange = (newValue) => {
+    console.log(newValue);
     setNewCodeItemText(newValue);
-
+    onCodeChange(newValue);
     // AceEditor의 높이를 자동으로 조절
     const lines = newValue.split("\n").length;
     const lineHeight = 20; // 기본적인 한 줄의 높이
@@ -57,8 +62,9 @@ function TextList({ onCodeChange, markdownResult, selectedLanguage }) {
             />
           ) : selectedLanguage === "javascript" ? (
             <AceEditor
+              placeholder="코드를 입력해보세요"
               mode="javascript"
-              theme="github"
+              theme="xcode"
               onChange={handleEditorChange}
               value={newCodeItemText}
               fontSize={14}
@@ -69,6 +75,9 @@ function TextList({ onCodeChange, markdownResult, selectedLanguage }) {
                 showLineNumbers: true,
                 tabSize: 2,
                 useWorker: false,
+                enableSnippets: false,
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
               }}
               style={{ width: "100%", height: "16px", overflow: "hidden" }}
             />

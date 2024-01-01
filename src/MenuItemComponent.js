@@ -20,6 +20,7 @@ function MenuItemComponent({
 }) {
   const handleConvertClick = () => {
     if (selectedLanguage === "markdown") {
+      console.log(inputText);
       const convertedMarkdown = marked(inputText);
       setMarkdownResult(convertedMarkdown);
     } else if (selectedLanguage === "javascript") {
@@ -27,6 +28,7 @@ function MenuItemComponent({
         const context = {
           result: null,
         };
+        console.log(inputText);
         const result = vm.runInNewContext(String(inputText), context);
         setMarkdownResult(result);
       } catch (error) {
@@ -36,6 +38,12 @@ function MenuItemComponent({
       }
     }
   };
+
+  const handleLanguageChange = (newValue) => {
+    setSelectedLanguage(newValue); // 선택된 언어 업데이트
+    setMarkdownResult(""); // 결과 초기화
+  };
+
   return (
     <div>
       <Toolbar>
@@ -135,9 +143,7 @@ function MenuItemComponent({
           <div style={{ padding: "0px 10px" }}>
             <Select
               value={selectedLanguage}
-              onChange={(e) => {
-                setSelectedLanguage(e.target.value); // 언어 변경시 상태 업데이트
-              }}
+              onChange={(e) => handleLanguageChange(e.target.value)} // handleLanguageChange 함수로 변경
               style={{ marginLeft: "10px", backgroundColor: "white" }}
             >
               <MenuItem value="markdown">Markdown</MenuItem>
