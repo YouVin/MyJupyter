@@ -21,7 +21,9 @@ function MenuItemComponent({
   const handleConvertClick = () => {
     if (selectedLanguage === "markdown") {
       console.log(inputText);
-      const convertedMarkdown = marked(inputText);
+      const convertedMarkdown = marked(inputText, {
+        breaks: true, // 이 옵션을 통해 줄바꿈 문자(\n)를 <br> 태그로 변환합니다.
+      });
       setMarkdownResult(convertedMarkdown);
     } else if (selectedLanguage === "javascript") {
       try {
@@ -30,7 +32,9 @@ function MenuItemComponent({
         };
         console.log(inputText);
         const result = vm.runInNewContext(String(inputText), context);
-        setMarkdownResult(result);
+        // \n을 <br>로 변환
+        const formattedResult = result.replace(/\n/g, "<br>");
+        setMarkdownResult(formattedResult);
       } catch (error) {
         setMarkdownResult(
           `Error occurred while evaluating JavaScript: ${error.message}`
@@ -63,7 +67,7 @@ function MenuItemComponent({
           variant="contained"
           color="inherit"
           style={{ backgroundColor: "white", marginLeft: "10px" }}
-          //onClick={props.addCell}
+          onClick={() => {}}
         >
           <AddIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
