@@ -3,20 +3,23 @@ import { MenuItem, IconButton, Select, Toolbar } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import ReplayIcon from "@mui/icons-material/Replay";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { marked } from "marked";
 
 const vm = require("vm"); // vm 모듈 임포트
 
 function MenuItemComponent({
+  selectedCellId,
+  deleteCell,
   inputText,
   setMarkdownResult,
   selectedLanguage,
   setSelectedLanguage,
+  addCell,
 }) {
   const handleConvertClick = () => {
     if (selectedLanguage === "markdown") {
@@ -30,10 +33,23 @@ function MenuItemComponent({
         const context = {
           result: null,
         };
-        console.log(inputText);
-        const result = vm.runInNewContext(String(inputText), context);
-        // \n을 <br>로 변환
-        const formattedResult = result.replace(/\n/g, "<br>");
+        const result = vm.runInNewContext(inputText, context);
+        console.log(result);
+        let formattedResult;
+
+        if (
+          typeof result === "number" ||
+          typeof result === "bigint" ||
+          typeof result === "boolean"
+        ) {
+          formattedResult = result.toString();
+        } else if (typeof result === "string") {
+          formattedResult = result.replace(/\n/g, "<br>");
+        } else if (typeof result === "object") {
+          formattedResult = JSON.stringify(result);
+        } else {
+          formattedResult = "Result is of unknown type";
+        }
         setMarkdownResult(formattedResult);
       } catch (error) {
         setMarkdownResult(
@@ -67,7 +83,7 @@ function MenuItemComponent({
           variant="contained"
           color="inherit"
           style={{ backgroundColor: "white", marginLeft: "10px" }}
-          onClick={() => {}}
+          onClick={addCell}
         >
           <AddIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
@@ -134,14 +150,9 @@ function MenuItemComponent({
           variant="contained"
           color="inherit"
           style={{ backgroundColor: "white", marginLeft: "10px" }}
-          onClick={() => {
-            // 여기에 선택된 변환기를 기반으로 입력 텍스트를 처리하는 로직을 추가할 수 있습니다.
-          }}
+          onClick={() => deleteCell(selectedCellId)}
         >
-          <KeyboardDoubleArrowRightIcon
-            sx={{ color: "gray" }}
-            style={{ fontSize: "15px" }}
-          />
+          <DeleteIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
         {
           <div style={{ padding: "0px 10px" }}>
