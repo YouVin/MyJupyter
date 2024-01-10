@@ -1,6 +1,6 @@
 // ...
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NotebookMenuBar from "./NotebookMenuBar";
 import MenuItemComponent from "./MenuItemComponent";
 import TextList from "./TextList";
@@ -65,6 +65,7 @@ function App() {
           <TextList
             key={item.id}
             id={item.id}
+            setMarkdownResult={setMarkdownResult}
             isActive={selectedCellId === item.id} // 현재 셀이 활성화된 상태인지 확인
             onCodeChange={handleCodeChange}
             markdownResult={markdownResult}

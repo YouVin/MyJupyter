@@ -103,7 +103,9 @@ function TextList({
           </ListItem>
           <ListItem style={{ padding: "10px 20px" }}>
             {/* 두 번째 아이템: 변환된 마크다운 텍스트 */}
-            <div dangerouslySetInnerHTML={{ __html: markdownResult }} />
+            {isActive && (
+              <div dangerouslySetInnerHTML={{ __html: markdownResult }} />
+            )}
           </ListItem>
         </List>
       </Paper>
