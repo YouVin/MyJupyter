@@ -21,18 +21,21 @@ function MenuItemComponent({
   setSelectedLanguage,
   addCell,
 }) {
+  //실행 버튼 함수
   const handleConvertClick = () => {
     if (selectedLanguage === "markdown") {
       console.log(inputText);
       const convertedMarkdown = marked(inputText, {
         breaks: true, // 이 옵션을 통해 줄바꿈 문자(\n)를 <br> 태그로 변환합니다.
       });
+      //마크다운 변환 함수
       setMarkdownResult(convertedMarkdown);
     } else if (selectedLanguage === "javascript") {
       try {
         const context = {
           result: null,
         };
+        //자바스크립트 변환 함수
         const result = vm.runInNewContext(inputText, context);
         console.log(result);
         let formattedResult;
@@ -58,7 +61,7 @@ function MenuItemComponent({
       }
     }
   };
-
+  //코드 변환 시 초기화
   const handleLanguageChange = (newValue) => {
     setSelectedLanguage(newValue); // 선택된 언어 업데이트
     setMarkdownResult(""); // 결과 초기화

@@ -5,7 +5,9 @@ import "ace-builds/src-noconflict/mode-javascript"; // JavaScript 모드 임포�
 import "ace-builds/src-noconflict/theme-xcode"; // xcode 테마 임포트
 import "ace-builds/src-noconflict/ext-language_tools";
 
-//onCodeChang = 사용자입력값, markdownResult=결과값, selectedLanguage = 선택언어
+//isActive = 활성 여부 , onSelect = 활성된 셀
+// onCodeChang = 사용자입력값
+//markdownResult=결과값, selectedLanguage = 선택언어
 function TextList({
   isActive,
   onSelect,
@@ -22,6 +24,7 @@ function TextList({
     resize: "vertical",
   };
 
+  //드롭버튼 변경 시 작성 칸 초기화
   useEffect(() => {
     // selectedLanguage가 변경될 때마다 newCodeItemText 초기화
     setNewCodeItemText("");
