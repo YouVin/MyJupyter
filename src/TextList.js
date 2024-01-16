@@ -14,6 +14,8 @@ function TextList({
   onCodeChange,
   markdownResult,
   selectedLanguage,
+  selectedCellId, // 새로 추가된 prop: 현재 선택된 셀의 ID
+  cellItems,
 }) {
   const [newCodeItemText, setNewCodeItemText] = useState("");
 
@@ -105,10 +107,7 @@ function TextList({
             ) : null}
           </ListItem>
           <ListItem style={{ padding: "10px 20px" }}>
-            {/* 두 번째 아이템: 변환된 마크다운 텍스트 */}
-            {isActive && (
-              <div dangerouslySetInnerHTML={{ __html: markdownResult }} />
-            )}
+            {<div dangerouslySetInnerHTML={{ __html: markdownResult }} />}
           </ListItem>
         </List>
       </Paper>

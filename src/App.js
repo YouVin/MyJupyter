@@ -1,5 +1,3 @@
-// ...
-
 import React, { useState } from "react";
 import NotebookMenuBar from "./NotebookMenuBar";
 import MenuItemComponent from "./MenuItemComponent";
@@ -7,30 +5,122 @@ import TextList from "./TextList";
 import { AppBar, Container } from "@mui/material";
 import TopBar from "./TopBar";
 import "./App.css";
+import { marked } from "marked";
+
+const vm = require("vm"); // vm 모듈 임포트
 
 function App() {
-  const [cellItems, setCellItems] = useState([{ id: 1 }]);
-  const [inputText, setInputText] = useState(""); // MenuItemComponent로 전달될 상태
+  const [cellItems, setCellItems] = useState([
+    { id: 1, inputText: "", markdownResult: "", selectedLanguage: "markdown" },
+  ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
-  const [selectedLanguage, setSelectedLanguage] = useState("markdown"); // 기본값을 markdown으로 설정
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
+
+  //셀 변환 코드 실행 함수
+  const handleConvertClick = (id) => {
+    const selectedCell = cellItems.find((cell) => cell.id === id);
+    const { inputText, selectedLanguage } = selectedCell;
+
+    console.log("handleConvertClick called");
+    console.log("Selected Cell ID:", selectedCellId);
+    console.log("Selected Language:", selectedLanguage);
+
+    if (selectedLanguage === "markdown") {
+      console.log(inputText);
+      const convertedMarkdown = marked(inputText, {
+        breaks: true,
+      });
+      setCellItems((prevState) => {
+        const updatedCellItems = prevState.map((cell) => {
+          if (cell.id === id) {
+            return {
+              ...cell,
+              markdownResult: convertedMarkdown,
+            };
+          }
+          return cell;
+        });
+        return updatedCellItems;
+      });
+    } else if (selectedLanguage === "javascript") {
+      try {
+        const context = {
+          result: null,
+        };
+        const result = vm.runInNewContext(inputText, context);
+        console.log(result);
+
+        let formattedResult;
+        if (
+          typeof result === "number" ||
+          typeof result === "bigint" ||
+          typeof result === "boolean"
+        ) {
+          formattedResult = result.toString();
+        } else if (typeof result === "string") {
+          formattedResult = result.replace(/\n/g, "<br>");
+        } else if (typeof result === "object") {
+          formattedResult = JSON.stringify(result);
+        } else {
+          formattedResult = "Result is of unknown type";
+        }
+        setMarkdownResult(formattedResult);
+
+        setCellItems((prevState) => {
+          const updatedCellItems = prevState.map((cell) => {
+            if (cell.id === id) {
+              return {
+                ...cell,
+                markdownResult: formattedResult,
+              };
+            }
+            return cell;
+          });
+          return updatedCellItems;
+        });
+      } catch (error) {
+        setMarkdownResult(
+          `Error occurred while evaluating JavaScript: ${error.message}`
+        );
+      }
+    }
+  };
 
   //셀 추가, 관리 함수
   const addCellItem = () => {
     const newId =
       cellItems.length > 0 ? cellItems[cellItems.length - 1].id + 1 : 1;
-    setCellItems([...cellItems, { id: newId }]);
+    setCellItems([
+      ...cellItems,
+      {
+        id: newId,
+        inputText: "",
+        markdownResult: "",
+        selectedLanguage: "markdown",
+      },
+    ]);
   };
 
   const handleCodeChange = (codeValue) => {
-    setInputText(codeValue);
+    // Assume `selectedCellId` is always set before calling this function
+    setCellItems((prevState) => {
+      const updatedCellItems = prevState.map((cell) => {
+        if (cell.id === selectedCellId) {
+          return {
+            ...cell,
+            inputText: codeValue,
+          };
+        }
+        return cell;
+      });
+      return updatedCellItems;
+    });
   };
-
+  //셀 선택 함수
   const handleCellSelect = (id) => {
     setSelectedCellId(id);
     console.log(id);
   };
-
   // 셀 삭제 로직
   const deleteCell = (idToDelete) => {
     if (idToDelete === null) {
@@ -53,11 +143,31 @@ function App() {
         <MenuItemComponent
           addCell={addCellItem}
           deleteCell={() => deleteCell(selectedCellId)}
-          inputText={inputText}
+          inputText={
+            cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
+            ""
+          }
           setMarkdownResult={setMarkdownResult}
-          selectedLanguage={selectedLanguage} // selectedLanguage 전달
-          setSelectedLanguage={setSelectedLanguage} // 언어 변경 함수 전달
-          selectedCellId={selectedCellId} // 셀 ID 전달
+          selectedLanguage={
+            cellItems.find((cell) => cell.id === selectedCellId)
+              ?.selectedLanguage || "markdown"
+          }
+          setSelectedLanguage={(lang) => {
+            setCellItems((prevState) => {
+              const updatedCellItems = prevState.map((cell) => {
+                if (cell.id === selectedCellId) {
+                  return {
+                    ...cell,
+                    selectedLanguage: lang,
+                  };
+                }
+                return cell;
+              });
+              return updatedCellItems;
+            });
+          }}
+          selectedCellId={selectedCellId}
+          handleConvertClick={() => handleConvertClick(selectedCellId)}
         />
       </div>
       <div>
@@ -68,9 +178,10 @@ function App() {
             setMarkdownResult={setMarkdownResult}
             isActive={selectedCellId === item.id} // 현재 셀이 활성화된 상태인지 확인
             onCodeChange={handleCodeChange}
-            markdownResult={markdownResult}
-            selectedLanguage={selectedLanguage}
+            markdownResult={item.markdownResult}
+            selectedLanguage={item.selectedLanguage}
             onSelect={() => handleCellSelect(item.id)} //셀 선택 해제
+            cellItems={cellItems}
           />
         ))}
       </div>
