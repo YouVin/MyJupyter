@@ -14,8 +14,6 @@ function TextList({
   onCodeChange,
   markdownResult,
   selectedLanguage,
-  selectedCellId, // 새로 추가된 prop: 현재 선택된 셀의 ID
-  cellItems,
 }) {
   const [newCodeItemText, setNewCodeItemText] = useState("");
 
@@ -40,7 +38,6 @@ function TextList({
   };
   //javascript aditor필드
   const handleEditorChange = (newValue) => {
-    console.log(newValue);
     setNewCodeItemText(newValue);
     onCodeChange(newValue);
     // AceEditor의 높이를 자동으로 조절

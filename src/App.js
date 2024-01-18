@@ -6,8 +6,7 @@ import { AppBar, Container } from "@mui/material";
 import TopBar from "./TopBar";
 import "./App.css";
 import { marked } from "marked";
-
-const vm = require("vm"); // vm 모듈 임포트
+import * as Babel from "@babel/standalone";
 
 function App() {
   const [cellItems, setCellItems] = useState([
@@ -30,6 +29,7 @@ function App() {
       const convertedMarkdown = marked(inputText, {
         breaks: true,
       });
+      //cellItems 상태 업데이트 함수
       setCellItems((prevState) => {
         const updatedCellItems = prevState.map((cell) => {
           if (cell.id === id) {
@@ -44,34 +44,25 @@ function App() {
       });
     } else if (selectedLanguage === "javascript") {
       try {
-        const context = {
-          result: null,
-        };
-        const result = vm.runInNewContext(inputText, context);
-        console.log(result);
+        // 외부 변수를 클로저로 전달
+        const results = [];
 
-        let formattedResult;
-        if (
-          typeof result === "number" ||
-          typeof result === "bigint" ||
-          typeof result === "boolean"
-        ) {
-          formattedResult = result.toString();
-        } else if (typeof result === "string") {
-          formattedResult = result.replace(/\n/g, "<br>");
-        } else if (typeof result === "object") {
-          formattedResult = JSON.stringify(result);
-        } else {
-          formattedResult = "Result is of unknown type";
-        }
-        setMarkdownResult(formattedResult);
+        // 각 줄을 순회하면서 실행
+        inputText.split(";").forEach((line) => {
+          const result = eval(String(line.trim()));
+          results.push(result);
+        });
 
+        setMarkdownResult(results);
+        console.log("Results:", results);
+
+        // 셀 상태 업데이트 함수
         setCellItems((prevState) => {
           const updatedCellItems = prevState.map((cell) => {
             if (cell.id === id) {
               return {
                 ...cell,
-                markdownResult: formattedResult,
+                markdownResult: results,
               };
             }
             return cell;
