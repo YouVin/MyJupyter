@@ -123,6 +123,7 @@ function MenuItemComponent({
             >
               <MenuItem value="markdown">Markdown</MenuItem>
               <MenuItem value="javascript">JavaScript</MenuItem>
+              <MenuItem value="html">HTML</MenuItem>
             </Select>
 
             {/* 변환 버튼 */}

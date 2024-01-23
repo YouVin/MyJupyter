@@ -6,7 +6,6 @@ import { AppBar, Container } from "@mui/material";
 import TopBar from "./TopBar";
 import "./App.css";
 import { marked } from "marked";
-import * as Babel from "@babel/standalone";
 
 function App() {
   const [cellItems, setCellItems] = useState([
@@ -44,25 +43,14 @@ function App() {
       });
     } else if (selectedLanguage === "javascript") {
       try {
-        // 외부 변수를 클로저로 전달
-        const results = [];
-
-        // 각 줄을 순회하면서 실행
-        inputText.split(";").forEach((line) => {
-          const result = eval(String(line.trim()));
-          results.push(result);
-        });
-
-        setMarkdownResult(results);
-        console.log("Results:", results);
-
+        // 중간 결과를 업데이트
         // 셀 상태 업데이트 함수
         setCellItems((prevState) => {
           const updatedCellItems = prevState.map((cell) => {
             if (cell.id === id) {
               return {
                 ...cell,
-                markdownResult: results,
+                //markdownResult: //result,
               };
             }
             return cell;
@@ -72,6 +60,30 @@ function App() {
       } catch (error) {
         setMarkdownResult(
           `Error occurred while evaluating JavaScript: ${error.message}`
+        );
+      }
+    } else if (selectedLanguage === "html") {
+      // HTML 처리 로직을 추가
+      try {
+        const result = inputText; // HTML은 그대로 출력
+        setMarkdownResult(result);
+
+        // 셀 상태 업데이트 함수
+        setCellItems((prevState) => {
+          const updatedCellItems = prevState.map((cell) => {
+            if (cell.id === id) {
+              return {
+                ...cell,
+                markdownResult: result,
+              };
+            }
+            return cell;
+          });
+          return updatedCellItems;
+        });
+      } catch (error) {
+        setMarkdownResult(
+          `Error occurred while processing HTML: ${error.message}`
         );
       }
     }

@@ -4,6 +4,7 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript"; // JavaScript 모드 임포트
 import "ace-builds/src-noconflict/theme-xcode"; // xcode 테마 임포트
 import "ace-builds/src-noconflict/ext-language_tools";
+import "ace-builds/src-noconflict/mode-html"; // HTML 모드 임포트
 
 //isActive = 활성 여부 , onSelect = 활성된 셀
 // onCodeChang = 사용자입력값
@@ -84,6 +85,28 @@ function TextList({
               <AceEditor
                 placeholder="코드를 입력해보세요"
                 mode="javascript"
+                theme="xcode"
+                onChange={handleEditorChange}
+                value={newCodeItemText}
+                fontSize={14}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                setOptions={{
+                  showLineNumbers: true,
+                  tabSize: 2,
+                  useWorker: false,
+                  enableSnippets: false,
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                }}
+                style={{ width: "100%", height: "16px", overflow: "hidden" }}
+              />
+            ) : null}
+            {selectedLanguage === "html" ? (
+              <AceEditor
+                placeholder="HTML 코드를 입력하세요"
+                mode="html"
                 theme="xcode"
                 onChange={handleEditorChange}
                 value={newCodeItemText}
