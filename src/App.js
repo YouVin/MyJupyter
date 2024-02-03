@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NotebookMenuBar from "./NotebookMenuBar";
 import MenuItemComponent from "./MenuItemComponent";
 import TextList from "./TextList";
@@ -6,6 +6,7 @@ import { AppBar, Container } from "@mui/material";
 import TopBar from "./TopBar";
 import "./App.css";
 import { marked } from "marked";
+import { saveAs } from "file-saver";
 
 function App() {
   const [cellItems, setCellItems] = useState([
@@ -42,28 +43,20 @@ function App() {
         return updatedCellItems;
       });
     } else if (selectedLanguage === "javascript") {
-      try {
-        // 중간 결과를 업데이트
-        // 셀 상태 업데이트 함수
-        setCellItems((prevState) => {
-          const updatedCellItems = prevState.map((cell) => {
-            if (cell.id === id) {
-              return {
-                ...cell,
-                //markdownResult: //result,
-              };
-            }
-            return cell;
-          });
-          return updatedCellItems;
+      // 셀 상태 업데이트 함수
+      setCellItems((prevState) => {
+        const updatedCellItems = prevState.map((cell) => {
+          if (cell.id === id) {
+            return {
+              ...cell,
+              markdownResult: eval(inputText),
+            };
+          }
+          return cell;
         });
-      } catch (error) {
-        setMarkdownResult(
-          `Error occurred while evaluating JavaScript: ${error.message}`
-        );
-      }
+        return updatedCellItems;
+      });
     } else if (selectedLanguage === "html") {
-      // HTML 처리 로직을 추가
       try {
         const result = inputText; // HTML은 그대로 출력
         setMarkdownResult(result);
@@ -88,7 +81,6 @@ function App() {
       }
     }
   };
-
   //셀 추가, 관리 함수
   const addCellItem = () => {
     const newId =
@@ -102,6 +94,31 @@ function App() {
         selectedLanguage: "markdown",
       },
     ]);
+  };
+  //어플리케이션 로드 시 로컬에서 데이터 가져와 셀 설정
+  useEffect(() => {
+    const storedCellItems = localStorage.getItem("cellItems");
+    if (storedCellItems) {
+      const parsedCellItems = JSON.parse(storedCellItems);
+      setCellItems(parsedCellItems);
+    }
+  }, []);
+
+  // 셀 저장 및 다운로드 함수
+  const handleSaveAndDownloadClick = () => {
+    // 사용자에게 파일 이름 입력 받기
+    const fileName = window.prompt("Enter file name:");
+
+    if (fileName) {
+      // 파일 이름이 유효하다면 다운로드
+      const serializedCellItems = JSON.stringify(cellItems);
+      const blob = new Blob([serializedCellItems], {
+        type: "application/json",
+      });
+
+      // 파일 다운로드
+      saveAs(blob, `${fileName}.json`);
+    }
   };
 
   const handleCodeChange = (codeValue) => {
@@ -171,6 +188,7 @@ function App() {
           }}
           selectedCellId={selectedCellId}
           handleConvertClick={() => handleConvertClick(selectedCellId)}
+          handleSaveAndDownloadClick={handleSaveAndDownloadClick}
         />
       </div>
       <div>
@@ -191,5 +209,4 @@ function App() {
     </Container>
   );
 }
-
 export default App;

@@ -17,6 +17,7 @@ function MenuItemComponent({
   setSelectedLanguage,
   addCell,
   handleConvertClick,
+  handleSaveAndDownloadClick,
 }) {
   //코드 변환 시 초기화
   const handleLanguageChange = (newValue) => {
@@ -32,9 +33,7 @@ function MenuItemComponent({
           variant="contained"
           color="inherit"
           style={{ backgroundColor: "white" }}
-          onClick={() => {
-            // 여기에 선택된 변환기를 기반으로 입력 텍스트를 처리하는 로직을 추가할 수 있습니다.
-          }}
+          onClick={handleSaveAndDownloadClick}
         >
           <SaveIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
