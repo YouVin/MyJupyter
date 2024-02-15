@@ -121,8 +121,9 @@ function App() {
     }
   };
 
+  //입력 내용 상태 업데이트 함수
   const handleCodeChange = (codeValue) => {
-    // Assume `selectedCellId` is always set before calling this function
+    //selectedCellId 활성화 설정 필수
     setCellItems((prevState) => {
       const updatedCellItems = prevState.map((cell) => {
         if (cell.id === selectedCellId) {
@@ -136,6 +137,7 @@ function App() {
       return updatedCellItems;
     });
   };
+
   //셀 선택 함수
   const handleCellSelect = (id) => {
     setSelectedCellId(id);
@@ -198,11 +200,11 @@ function App() {
             id={item.id}
             setMarkdownResult={setMarkdownResult}
             isActive={selectedCellId === item.id} // 현재 셀이 활성화된 상태인지 확인
-            onCodeChange={handleCodeChange}
+            onCodeChange={handleCodeChange} // 코드 작성 내용을 업데이트
             markdownResult={item.markdownResult}
             selectedLanguage={item.selectedLanguage}
-            onSelect={() => handleCellSelect(item.id)} //셀 선택 해제
-            cellItems={cellItems}
+            onSelect={() => handleCellSelect(item.id)} //셀 선택 및 해제
+            cellItems={cellItems} //전체 셀 목록
           />
         ))}
       </div>
