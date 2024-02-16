@@ -95,14 +95,6 @@ function App() {
       },
     ]);
   };
-  //어플리케이션 로드 시 로컬에서 데이터 가져와 셀 설정
-  useEffect(() => {
-    const storedCellItems = localStorage.getItem("cellItems");
-    if (storedCellItems) {
-      const parsedCellItems = JSON.parse(storedCellItems);
-      setCellItems(parsedCellItems);
-    }
-  }, []);
 
   // 셀 저장 및 다운로드 함수
   const handleSaveAndDownloadClick = () => {
