@@ -91,6 +91,28 @@ function App() {
     }
   };
 
+  // 셀 붙여넣기 핸들러
+  const handlePasteCell = () => {
+    navigator.clipboard.readText().then((text) => {
+      const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
+      if (selectedCell) {
+        // 클립보드에서 읽은 텍스트를 새로운 셀로 추가
+        setCellItems((prevState) => [
+          ...prevState.slice(0, prevState.indexOf(selectedCell) + 1), // 선택한 셀 다음에 추가
+          {
+            id: prevState.length + 1,
+            inputText: selectedCell.markdownResult, // 결과 값(inputText 대신 markdownResult 사용)
+            markdownResult: marked(selectedCell.markdownResult, {
+              breaks: true,
+            }), // 마크다운으로 변환
+            selectedLanguage: selectedCell.selectedLanguage, // 선택한 셀의 언어 설정 사용
+          },
+          ...prevState.slice(prevState.indexOf(selectedCell) + 1), // 나머지 셀들을 뒤에 추가
+        ]);
+      }
+    });
+  };
+
   //셀 추가, 관리 함수
   const addCellItem = () => {
     const newId =
@@ -167,6 +189,7 @@ function App() {
         <MenuItemComponent
           addCell={addCellItem}
           handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
+          handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
           deleteCell={() => deleteCell(selectedCellId)}
           inputText={
             cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
