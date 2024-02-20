@@ -81,6 +81,16 @@ function App() {
       }
     }
   };
+  // 셀 복사 핸들러
+  const handleCopyCell = () => {
+    const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
+    console.log(selectedCell.id + " 복사 !");
+    if (selectedCell) {
+      // 클립보드에 복사
+      navigator.clipboard.writeText(selectedCell.inputText);
+    }
+  };
+
   //셀 추가, 관리 함수
   const addCellItem = () => {
     const newId =
@@ -156,6 +166,7 @@ function App() {
       <div style={{ padding: "0px 10px" }}>
         <MenuItemComponent
           addCell={addCellItem}
+          handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
           deleteCell={() => deleteCell(selectedCellId)}
           inputText={
             cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||

@@ -7,8 +7,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DeleteIcon from "@mui/icons-material/Delete";
-
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 function MenuItemComponent({
   selectedCellId,
   deleteCell,
@@ -18,6 +17,7 @@ function MenuItemComponent({
   addCell,
   handleConvertClick,
   handleSaveAndDownloadClick,
+  handleCopyCell,
 }) {
   //코드 변환 시 초기화
   const handleLanguageChange = (newValue) => {
@@ -51,11 +51,21 @@ function MenuItemComponent({
           variant="contained"
           color="inherit"
           style={{ backgroundColor: "white", marginLeft: "10px" }}
-          onClick={() => {
-            // 여기에 선택된 변환기를 기반으로 입력 텍스트를 처리하는 로직을 추가할 수 있습니다.
-          }}
+          onClick={() => deleteCell(selectedCellId)}
         >
           <ContentCutIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
+        </IconButton>
+        <IconButton
+          size="small"
+          variant="contained"
+          color="inherit"
+          style={{ backgroundColor: "white", marginLeft: "10px" }}
+          onClick={handleCopyCell}
+        >
+          <ContentCopyIcon
+            sx={{ color: "gray" }}
+            style={{ fontSize: "15px" }}
+          />
         </IconButton>
         <IconButton
           size="small"
@@ -66,12 +76,11 @@ function MenuItemComponent({
             // 여기에 선택된 변환기를 기반으로 입력 텍스트를 처리하는 로직을 추가할 수 있습니다.
           }}
         >
-          <ContentCopyIcon
+          <ContentPasteIcon
             sx={{ color: "gray" }}
             style={{ fontSize: "15px" }}
           />
         </IconButton>
-
         <IconButton
           size="small"
           variant="contained"
@@ -103,15 +112,6 @@ function MenuItemComponent({
           }}
         >
           <ReplayIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
-        </IconButton>
-        <IconButton
-          size="small"
-          variant="contained"
-          color="inherit"
-          style={{ backgroundColor: "white", marginLeft: "10px" }}
-          onClick={() => deleteCell(selectedCellId)}
-        >
-          <DeleteIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
         {
           <div style={{ padding: "0px 10px" }}>
