@@ -190,12 +190,12 @@ function App() {
           addCell={addCellItem}
           handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
           handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
-          deleteCell={() => deleteCell(selectedCellId)}
+          deleteCell={() => deleteCell(selectedCellId)} //셀 삭제 함수 전달
           inputText={
             cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
             ""
           }
-          setMarkdownResult={setMarkdownResult}
+          setMarkdownResult={setMarkdownResult} // 초기화를 위한 결과창 함수 전달
           selectedLanguage={
             cellItems.find((cell) => cell.id === selectedCellId)
               ?.selectedLanguage || "markdown"
