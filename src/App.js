@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NotebookMenuBar from "./NotebookMenuBar";
 import MenuItemComponent from "./MenuItemComponent";
 import TextList from "./TextList";
@@ -46,18 +46,23 @@ function App() {
       });
     } else if (selectedLanguage === "javascript") {
       // 셀 상태 업데이트 함수
-      setCellItems((prevState) => {
-        const updatedCellItems = prevState.map((cell) => {
-          if (cell.id === id) {
-            return {
-              ...cell,
-              markdownResult: eval(inputText),
-            };
-          }
-          return cell;
+      try {
+        const codeResult = eval(inputText); // 사용자 입력 코드 실행
+        setCellItems((prevState) => {
+          const updatedCellItems = prevState.map((cell) => {
+            if (cell.id === id) {
+              return {
+                ...cell,
+                markdownResult: [codeResult], // 결과를 배열에 저장
+              };
+            }
+            return cell;
+          });
+          return updatedCellItems;
         });
-        return updatedCellItems;
-      });
+      } catch (error) {
+        console.error("Error occurred while executing JavaScript code:", error);
+      }
     } else if (selectedLanguage === "html") {
       try {
         const result = inputText; // HTML은 그대로 출력
@@ -114,19 +119,19 @@ function App() {
       }
     });
   };
+
   // 셀 중단 함수
   const handlePauseCell = () => {
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
     if (selectedCell) {
       const pauseMessage = "중단되었습니다.";
       setMarkdownResult(pauseMessage); // 결과 창에 중단 메시지 표시
-      console.log("중단되었습니다");
       setIsPaused(true); // 중단 상태 설정
-      pauseTimeout = setTimeout(() => {
-        // 일정 시간이 지난 후 결과 창 초기화
-        setMarkdownResult("");
-        setIsPaused(false); // 중단 상태 해제
-      }, 3000); // 3초 후 중단 상태 해제
+      console.log("정지!");
+
+      // 이전에 설정된 setTimeout을 clearTimeout으로 중지시킵니다.
+      clearTimeout(pauseTimeout);
+
       // 선택된 셀의 상태 업데이트
       setCellItems((prevState) => {
         const updatedCellItems = prevState.map((cell) => {
@@ -207,6 +212,19 @@ function App() {
     setCellItems(updatedCells);
   };
 
+  // 셀 재시작 함수
+  const handleRestartCell = () => {
+    setCellItems((prevState) => {
+      // 재시작한 셀 실행
+      prevState.forEach((cell) => {
+        if (cell.id === selectedCellId) {
+          handleConvertClick(selectedCellId);
+        }
+      });
+      return prevState;
+    });
+  };
+
   return (
     <Container maxWidth="lg">
       <AppBar position="static" style={{ padding: "8px 16px" }}>
@@ -222,6 +240,7 @@ function App() {
           handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
           deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
           handlePauseCell={handlePauseCell} // 셀 중단 함수 전달
+          handleRestartCell={handleRestartCell} // 셀 재시작 함수 전달
           inputText={
             cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
             ""
