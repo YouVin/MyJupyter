@@ -14,6 +14,8 @@ function App() {
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
+  const [isPaused, setIsPaused] = useState(false); // 중단되어 있는 상태 변수
+  let pauseTimeout; // 중단 상태를 저장하는 상태 변수
 
   //셀 변환 코드 실행 함수
   const handleConvertClick = (id) => {
@@ -81,7 +83,7 @@ function App() {
       }
     }
   };
-  // 셀 복사 핸들러
+  // 셀 복사 함수
   const handleCopyCell = () => {
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
     console.log(selectedCell.id + " 복사 !");
@@ -91,7 +93,7 @@ function App() {
     }
   };
 
-  // 셀 붙여넣기 핸들러
+  // 셀 붙여넣기 함수
   const handlePasteCell = () => {
     navigator.clipboard.readText().then((text) => {
       const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
@@ -111,6 +113,34 @@ function App() {
         ]);
       }
     });
+  };
+  // 셀 중단 함수
+  const handlePauseCell = () => {
+    const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
+    if (selectedCell) {
+      const pauseMessage = "중단되었습니다.";
+      setMarkdownResult(pauseMessage); // 결과 창에 중단 메시지 표시
+      console.log("중단되었습니다");
+      setIsPaused(true); // 중단 상태 설정
+      pauseTimeout = setTimeout(() => {
+        // 일정 시간이 지난 후 결과 창 초기화
+        setMarkdownResult("");
+        setIsPaused(false); // 중단 상태 해제
+      }, 3000); // 3초 후 중단 상태 해제
+      // 선택된 셀의 상태 업데이트
+      setCellItems((prevState) => {
+        const updatedCellItems = prevState.map((cell) => {
+          if (cell.id === selectedCellId) {
+            return {
+              ...cell,
+              markdownResult: pauseMessage, // 셀의 결과 메시지 업데이트
+            };
+          }
+          return cell;
+        });
+        return updatedCellItems;
+      });
+    }
   };
 
   //셀 추가, 관리 함수
@@ -190,7 +220,8 @@ function App() {
           addCell={addCellItem}
           handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
           handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
-          deleteCell={() => deleteCell(selectedCellId)} //셀 삭제 함수 전달
+          deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
+          handlePauseCell={handlePauseCell} // 셀 중단 함수 전달
           inputText={
             cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
             ""
