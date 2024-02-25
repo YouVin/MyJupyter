@@ -14,7 +14,6 @@ function App() {
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
-  const [isPaused, setIsPaused] = useState(false); // 중단되어 있는 상태 변수
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
 
   //셀 변환 코드 실행 함수
@@ -126,7 +125,6 @@ function App() {
     if (selectedCell) {
       const pauseMessage = "중단되었습니다.";
       setMarkdownResult(pauseMessage); // 결과 창에 중단 메시지 표시
-      setIsPaused(true); // 중단 상태 설정
       console.log("정지!");
 
       // 이전에 설정된 setTimeout을 clearTimeout으로 중지시킵니다.
