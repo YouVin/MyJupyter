@@ -185,14 +185,19 @@ function App() {
     const fileName = window.prompt("Enter file name:");
 
     if (fileName) {
+      // 셀 내용에서 HTML 태그를 제거하여 순수한 텍스트만 남기기
+      const strippedCellItems = cellItems.map((cell) => cell.inputText);
+
+      // 줄 바꿈 문자를 추가하여 셀 내용을 문자열로 이어붙이기
+      const strippedCellText = strippedCellItems.join("\n");
+
       // 파일 이름이 유효하다면 다운로드
-      const serializedCellItems = JSON.stringify(cellItems);
-      const blob = new Blob([serializedCellItems], {
-        type: "application/json",
+      const blob = new Blob([strippedCellText], {
+        type: "text/plain",
       });
 
       // 파일 다운로드
-      saveAs(blob, `${fileName}.json`);
+      saveAs(blob, `${fileName}.txt`);
     }
   };
 
