@@ -46,19 +46,38 @@ function App() {
     } else if (selectedLanguage === "javascript") {
       // 셀 상태 업데이트 함수
       try {
-        const codeResult = eval(inputText); // 사용자 입력 코드 실행
+        // 콘솔 출력을 임시로 저장할 변수
+        let consoleOutput = "";
+
+        // 콘솔 오버라이딩
+        const originalConsoleLog = console.log;
+        console.log = (message) => {
+          consoleOutput += `${message}\n`; // 콘솔 출력 내용을 변수에 저장
+          originalConsoleLog(message); // 원래의 콘솔 로그 함수 실행
+        };
+
+        // 코드 실행
+        eval(inputText);
+
+        // 줄 바꿈을 <br> 태그로 변경
+        consoleOutput = consoleOutput.replace(/\n/g, "<br>");
+
+        // 셀 상태 업데이트
         setCellItems((prevState) => {
           const updatedCellItems = prevState.map((cell) => {
             if (cell.id === id) {
               return {
                 ...cell,
-                markdownResult: [codeResult], // 결과를 배열에 저장
+                markdownResult: consoleOutput, // 콘솔 출력 내용을 결과로 저장
               };
             }
             return cell;
           });
           return updatedCellItems;
         });
+
+        // 콘솔 오버라이딩을 원래대로 복구
+        console.log = originalConsoleLog;
       } catch (error) {
         console.error("Error occurred while executing JavaScript code:", error);
       }
@@ -124,8 +143,7 @@ function App() {
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
     if (selectedCell) {
       const pauseMessage = "중단되었습니다.";
-      setMarkdownResult(pauseMessage); // 결과 창에 중단 메시지 표시
-      console.log("정지!");
+      console.log(pauseMessage); // 중단 메시지를 콘솔에 출력
 
       // 이전에 설정된 setTimeout을 clearTimeout으로 중지시킵니다.
       clearTimeout(pauseTimeout);
