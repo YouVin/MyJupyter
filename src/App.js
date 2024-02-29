@@ -56,9 +56,6 @@ function App() {
           originalConsoleLog(message); // 원래의 콘솔 로그 함수 실행
         };
 
-        // 코드 실행
-        eval(inputText);
-
         // 줄 바꿈을 <br> 태그로 변경
         consoleOutput = consoleOutput.replace(/\n/g, "<br>");
 
