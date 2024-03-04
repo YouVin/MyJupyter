@@ -245,7 +245,10 @@ function App() {
 
   return (
     <Container maxWidth="lg">
-      <AppBar position="static" style={{ padding: "8px 16px" }}>
+      <AppBar
+        position="static"
+        style={{ backgroundColor: "white", padding: "8px 0px" }}
+      >
         <TopBar />
       </AppBar>
       <div style={{ padding: "0px 10px", marginTop: "8px" }}>
