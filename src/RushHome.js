@@ -1,44 +1,38 @@
-import React, { useState } from "react";
-import { AppBar, Container, Typography, Grid, Button } from "@mui/material";
-import TopBar from "./TopBar";
+import React, { useState, useRef } from "react";
+import {
+  AppBar,
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+} from "@mui/material";
 import NotebookMenuBar from "./NotebookMenuBar";
-import { Link } from "react-router-dom";
+import TopBar from "./TopBar";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
-function RushHome() {
-  const [selectedDirectories, setSelectedDirectories] = useState([]);
-  const [filesByDirectory, setFilesByDirectory] = useState({});
+const RushHome = () => {
+  const [folderPath, setFolderPath] = useState("");
+  const [fileList, setFileList] = useState([]);
+  const fileInputRef = useRef(null); // input 요소에 접근하기 위한 ref
 
-  const handleFileInputChange = (event) => {
+  const handleFolderChange = (event) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      setSelectedDirectories(files);
+      const folderPath = event.target.value; // 파일 선택 input의 값은 폴더 경로가 됩니다.
+      setFolderPath(folderPath);
 
-      const updatedFilesByDirectory = {};
-      for (const file of files) {
-        const directoryPath = file.webkitRelativePath
-          .split("/")
-          .slice(0, -1)
-          .join("/"); // 디렉터리 경로 추출
-
-        if (!updatedFilesByDirectory[directoryPath]) {
-          updatedFilesByDirectory[directoryPath] = [];
-        }
-
-        updatedFilesByDirectory[directoryPath].push(file);
-      }
-      setFilesByDirectory(updatedFilesByDirectory);
-    } else {
-      setSelectedDirectories([]);
-      setFilesByDirectory({});
+      const fileList = Array.from(files).map((file) => file.name); // 파일 이름 목록 추출
+      setFileList(fileList);
     }
   };
-
   const handleButtonClick = () => {
-    // 새로운 경로로 이동
+    // 파일 선택 input 클릭
+    fileInputRef.current.click();
   };
 
   return (
-    <Container maxWidth="lg">
+    <div>
       <AppBar
         position="static"
         style={{ backgroundColor: "white", padding: "8px 0px" }}
@@ -46,41 +40,38 @@ function RushHome() {
         <TopBar />
       </AppBar>
       <NotebookMenuBar />
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-          <input
-            type="file"
-            directory="true"
-            webkitdirectory="true"
-            multiple
-            onChange={handleFileInputChange}
-          />
-        </Grid>
-        <Grid item>
-          <button>
-            <Link to="/Untitled.irn" target="_blank">
-              Go to App
-            </Link>
-          </button>
-        </Grid>
-      </Grid>
-      {selectedDirectories.length > 0 && (
-        <div style={{ marginTop: "20px" }}>
-          <Typography variant="h5">Selected Folder</Typography>
-          {Object.entries(filesByDirectory).map(([directoryPath, files]) => (
-            <div key={directoryPath}>
-              <Typography>{`Directory: ${directoryPath}`}</Typography>
-              <ul>
-                {files.map((file, index) => (
-                  <li key={index}>{file.name}</li>
-                ))}
-              </ul>
-            </div>
+      <h1>Rush Home</h1>
+      <Button
+        variant="outlined"
+        startIcon={<FolderOpenIcon />}
+        onClick={handleButtonClick}
+      >
+        폴더 불러오기
+      </Button>
+      <input
+        type="file"
+        id="folderInput"
+        ref={fileInputRef}
+        accept=""
+        webkitdirectory="true"
+        directory="true"
+        onChange={handleFolderChange}
+        style={{
+          display: "none", // 기본 파일 선택 input 숨김
+        }}
+      />
+      <div>
+        <p>선택한 폴더 경로: {folderPath}</p>
+        <List>
+          {fileList.map((fileName, index) => (
+            <ListItem key={index}>
+              <ListItemText primary={fileName} />
+            </ListItem>
           ))}
-        </div>
-      )}
-    </Container>
+        </List>
+      </div>
+    </div>
   );
-}
+};
 
 export default RushHome;
