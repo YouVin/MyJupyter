@@ -13,26 +13,27 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
-  const [fileList, setFileList] = useState([]);
-  const fileInputRef = useRef(null); // input 요소에 접근하기 위한 ref
+  const fileInputRef = useRef(null);
 
-  const handleFolderChange = (event) => {
+  const handleFolderPath = (event) => {
     const files = event.target.files;
+    const folderp = event.target.value;
     if (files && files.length > 0) {
-      const folderPath = event.target.value; // 파일 선택 input의 값은 폴더 경로가 됩니다.
-      setFolderPath(folderPath);
-
-      const fileList = Array.from(files).map((file) => file.name); // 파일 이름 목록 추출
-      setFileList(fileList);
+      const localfolderpath = folderp.substring(0, folderp.lastIndexOf("\\"));
+      // 첫 번째 파일의 상대 경로에서 첫 번째 폴더 이름을 추출합니다.
+      const foldername = files[0].webkitRelativePath.split("/")[0];
+      console.log(files[0]);
+      // 폴더 경로에 첫 번째 폴더 이름을 추가하여 설정합니다.
+      setFolderPath(localfolderpath + "\\" + foldername);
     }
   };
+
   const handleButtonClick = () => {
-    // 파일 선택 input 클릭
     fileInputRef.current.click();
   };
 
   return (
-    <div>
+    <Container maxWidth="lg">
       <AppBar
         position="static"
         style={{ backgroundColor: "white", padding: "8px 0px" }}
@@ -55,22 +56,15 @@ const RushHome = () => {
         accept=""
         webkitdirectory="true"
         directory="true"
-        onChange={handleFolderChange}
+        onChange={handleFolderPath}
         style={{
-          display: "none", // 기본 파일 선택 input 숨김
+          display: "none",
         }}
       />
       <div>
         <p>선택한 폴더 경로: {folderPath}</p>
-        <List>
-          {fileList.map((fileName, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={fileName} />
-            </ListItem>
-          ))}
-        </List>
       </div>
-    </div>
+    </Container>
   );
 };
 
