@@ -13,6 +13,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
+  const [fileList, setFileList] = useState([]);
   const fileInputRef = useRef(null);
 
   const handleFolderPath = (event) => {
@@ -22,9 +23,23 @@ const RushHome = () => {
       const localfolderpath = folderp.substring(0, folderp.lastIndexOf("\\"));
       // 첫 번째 파일의 상대 경로에서 첫 번째 폴더 이름을 추출합니다.
       const foldername = files[0].webkitRelativePath.split("/")[0];
-      console.log(files[0]);
       // 폴더 경로에 첫 번째 폴더 이름을 추가하여 설정합니다.
       setFolderPath(localfolderpath + "\\" + foldername);
+
+      const filteredFiles = Array.from(files).filter((file) => {
+        // 파일 경로에서 폴더 구분자의 개수를 세어 폴더 구분자가 2개 이상인 파일을 걸러냄
+        const folderSeparatorsCount = (
+          file.webkitRelativePath.match(/\//g) || []
+        ).length;
+
+        return folderSeparatorsCount < 2;
+      });
+
+      setFileList(filteredFiles);
+      // 각 파일의 전체 경로를 콘솔에 출력
+      filteredFiles.forEach((file) => {
+        console.log(file.webkitRelativePath);
+      });
     }
   };
 
@@ -63,6 +78,13 @@ const RushHome = () => {
       />
       <div>
         <p>선택한 폴더 경로: {folderPath}</p>
+        <List>
+          {fileList.map((file, index) => (
+            <ListItem key={index}>
+              <ListItemText primary={file.name} />
+            </ListItem>
+          ))}
+        </List>
       </div>
     </Container>
   );
