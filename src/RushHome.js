@@ -6,6 +6,14 @@ import {
   ListItem,
   ListItemText,
   Button,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import NotebookMenuBar from "./NotebookMenuBar";
 import TopBar from "./TopBar";
@@ -14,9 +22,24 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
   const [fileList, setFileList] = useState([]);
+  const [folderList, setFolderList] = useState([]); //폴더 목록
   const fileInputRef = useRef(null);
 
-  const handleFolderPath = (event) => {
+  //폴더 이름 가져오기
+  const extractFolderNames = (files) => {
+    const folderNames = new Set();
+
+    files.forEach((file) => {
+      const relativePath = file.name;
+      console.log(relativePath);
+      const folderName = relativePath.split("/")[0];
+      folderNames.add(folderName);
+    });
+    console.log(folderNames);
+    return Array.from(folderNames);
+  };
+
+  const handleFolderFile = (event) => {
     const files = event.target.files;
     const folderp = event.target.value;
     if (files && files.length > 0) {
@@ -36,10 +59,7 @@ const RushHome = () => {
       });
 
       setFileList(filteredFiles);
-      // 각 파일의 전체 경로를 콘솔에 출력
-      filteredFiles.forEach((file) => {
-        console.log(file.webkitRelativePath);
-      });
+      console.log(folderp);
     }
   };
 
@@ -71,7 +91,7 @@ const RushHome = () => {
         accept=""
         webkitdirectory="true"
         directory="true"
-        onChange={handleFolderPath}
+        onChange={handleFolderFile}
         style={{
           display: "none",
         }}
@@ -79,12 +99,44 @@ const RushHome = () => {
       <div>
         <p>선택한 폴더 경로: {folderPath}</p>
         <List>
-          {fileList.map((file, index) => (
+          {folderList.map((folder, index) => (
             <ListItem key={index}>
-              <ListItemText primary={file.name} />
+              <ListItemText primary={folder} />
             </ListItem>
           ))}
         </List>
+        <TableContainer component={Paper}>
+          <Table aria-label="file table">
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="subtitle1">이름</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle1">날짜</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle1">유형</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle1">크기</Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {fileList.map((file, index) => (
+                <TableRow key={index}>
+                  <TableCell>{file.name}</TableCell>
+                  <TableCell>
+                    {file.lastModifiedDate.toLocaleString()}
+                  </TableCell>
+                  <TableCell>{file.type}</TableCell>
+                  <TableCell>{file.size} bytes</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </Container>
   );
