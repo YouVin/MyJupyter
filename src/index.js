@@ -3,13 +3,18 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import RushHome from "./RushHome";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import App from "./App";
+import RushNote from "./RushNote";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <RushHome />
+      <Routes>
+        <Route path="/" element={<RushHome />}></Route>
+        <Route path="/nonamed" element={<RushNote />} />
+      </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -2,9 +2,6 @@ import React, { useState, useRef } from "react";
 import {
   AppBar,
   Container,
-  List,
-  ListItem,
-  ListItemText,
   Button,
   Typography,
   Table,
@@ -18,26 +15,13 @@ import {
 import NotebookMenuBar from "./NotebookMenuBar";
 import TopBar from "./TopBar";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import RushNote from "./RushNote";
+import { Link } from "react-router-dom";
 
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
   const [fileList, setFileList] = useState([]);
-  const [folderList, setFolderList] = useState([]); //폴더 목록
   const fileInputRef = useRef(null);
-
-  //폴더 이름 가져오기
-  const extractFolderNames = (files) => {
-    const folderNames = new Set();
-
-    files.forEach((file) => {
-      const relativePath = file.name;
-      console.log(relativePath);
-      const folderName = relativePath.split("/")[0];
-      folderNames.add(folderName);
-    });
-    console.log(folderNames);
-    return Array.from(folderNames);
-  };
 
   const handleFolderFile = (event) => {
     const files = event.target.files;
@@ -63,6 +47,25 @@ const RushHome = () => {
     }
   };
 
+  // 새로운 파일 생성 함수
+  const createNewFile = () => {
+    // 현재 선택된 폴더 경로
+    const currentFolderPath = folderPath;
+
+    // 새로운 파일 이름
+    const newFileName = "nonamed.irn";
+
+    // 새로운 파일의 경로
+    const newFilePath = currentFolderPath + "/" + newFileName;
+
+    // 파일 생성 및 저장 로직
+    // 이 예시에서는 브라우저의 File API를 사용하여 파일 생성하고 다운로드하는 방식으로 구현되어 있습니다.
+    // 실제로는 해당 경로에 파일을 저장하는 방법에 따라 구현이 달라질 수 있습니다.
+    const anchor = document.createElement("a");
+    anchor.download = newFileName;
+    anchor.click();
+  };
+
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -84,6 +87,11 @@ const RushHome = () => {
       >
         폴더 불러오기
       </Button>
+      <Button variant="outlined" onClick={createNewFile}>
+        <Link to="/nonamed" target="_blank">
+          파일 생성하기
+        </Link>
+      </Button>
       <input
         type="file"
         id="folderInput"
@@ -98,13 +106,7 @@ const RushHome = () => {
       />
       <div>
         <p>선택한 폴더 경로: {folderPath}</p>
-        <List>
-          {folderList.map((folder, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={folder} />
-            </ListItem>
-          ))}
-        </List>
+
         <TableContainer component={Paper}>
           <Table aria-label="file table">
             <TableHead>
