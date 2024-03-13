@@ -36,26 +36,30 @@ function TopBar() {
           height: "auto",
         }}
       />
-      <Typography
-        sx={{
-          marginLeft: "20px",
-          color: "black",
-          fontSize: "20px",
-        }}
-        variant="h6"
-      >
-        Untitled
-      </Typography>
-      <Typography
-        sx={{
-          marginLeft: "20px",
-          color: "black",
-          fontSize: "15px",
-        }}
-        variant="h6"
-      >
-        Last : {lastExecutionTime}
-      </Typography>
+      {window.location.pathname === "/nonamed" && (
+        <Typography
+          sx={{
+            marginLeft: "20px",
+            color: "black",
+            fontSize: "20px",
+          }}
+          variant="h6"
+        >
+          Nonamed
+        </Typography>
+      )}
+      {window.location.pathname === "/nonamed" && (
+        <Typography
+          sx={{
+            marginLeft: "20px",
+            color: "black",
+            fontSize: "15px",
+          }}
+          variant="h6"
+        >
+          Last : {lastExecutionTime}
+        </Typography>
+      )}
     </Toolbar>
   );
 }
