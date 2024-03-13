@@ -1,9 +1,10 @@
-// TopBar.js
 import React, { useState, useEffect } from "react";
 import { Toolbar, Typography } from "@mui/material";
 
-function TopBar() {
+function TopBar({ onTitleChange }) {
   const [lastExecutionTime, setLastExecutionTime] = useState(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     // 로컬 저장소에서 마지막 실행 시간을 가져옴
@@ -12,6 +13,13 @@ function TopBar() {
       setLastExecutionTime(getRelativeTime(new Date(storedLastExecutionTime)));
     }
   }, []);
+
+  useEffect(() => {
+    // 컴포넌트가 마운트되면 window 객체를 사용하여 로직 실행
+    if (window.location.pathname === "/nonamed") {
+      // 로직 실행
+    }
+  }, []); // 컴포넌트가 마운트될 때 한 번만 실행되도록 빈 배열 전달
 
   const getRelativeTime = (dateTime) => {
     const diffInMs = new Date() - dateTime;
@@ -26,6 +34,16 @@ function TopBar() {
     }
   };
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+    // 부모 컴포넌트로 변경된 타이틀 전달
+    onTitleChange(event.target.value);
+  };
+
+  const handleTitleClick = () => {
+    setIsEditingTitle(true);
+  };
+
   return (
     <Toolbar sx={{ backgroundColor: "white" }}>
       <img
@@ -37,16 +55,22 @@ function TopBar() {
         }}
       />
       {window.location.pathname === "/nonamed" && (
-        <Typography
-          sx={{
+        <input
+          type="text"
+          value={title}
+          onChange={handleTitleChange}
+          onClick={handleTitleClick}
+          readOnly={!isEditingTitle}
+          style={{
             marginLeft: "20px",
             color: "black",
             fontSize: "20px",
+            border: "none",
+            outline: "none",
+            backgroundColor: "transparent",
+            cursor: "pointer",
           }}
-          variant="h6"
-        >
-          Nonamed
-        </Typography>
+        />
       )}
       {window.location.pathname === "/nonamed" && (
         <Typography

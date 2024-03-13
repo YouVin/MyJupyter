@@ -13,6 +13,7 @@ function RushNote({ rushNoteState }) {
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
+  const [title, setTitle] = useState("Nonamed"); // 타이틀 상태
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
 
   //셀 변환 코드 실행 함수
@@ -172,20 +173,14 @@ function RushNote({ rushNoteState }) {
       },
     ]);
   };
-
   // 파일 저장 및 다운로드 함수
-  const handleSaveAndDownloadClick = (fileId) => {
-    // 사용자에게 파일 이름 입력 받기
-    const fileName = window.prompt("Enter file name:");
+  const handleSaveAndDownloadClick = () => {
+    console.log(title);
 
-    if (fileName) {
-      // fileId가 객체인 경우 문자열로 변환하여 저장
-      const fileIdString =
-        typeof fileId === "object" ? JSON.stringify(fileId) : fileId;
-
+    if (title) {
       // 현재 상태를 JSON으로 변환하여 저장
       const jsonState = JSON.stringify(cellItems);
-      localStorage.setItem(`file_${fileIdString}`, jsonState);
+      localStorage.setItem(`${title}`, jsonState);
     }
   };
 
@@ -238,6 +233,11 @@ function RushNote({ rushNoteState }) {
     setCellItems(updatedCells);
   };
 
+  // TopBar 컴포넌트에서 타이틀 변경 시 호출될 함수
+  const handleTitleChange = (newTitle) => {
+    setTitle(newTitle); // 타이틀 상태 변경
+  };
+
   // 셀 재시작 함수
   const handleRestartCell = () => {
     setCellItems((prevState) => {
@@ -257,7 +257,7 @@ function RushNote({ rushNoteState }) {
         position="static"
         style={{ backgroundColor: "white", padding: "8px 0px" }}
       >
-        <TopBar />
+        <TopBar onTitleChange={handleTitleChange} />
       </AppBar>
       <div style={{ padding: "0px 10px", marginTop: "8px" }}>
         <NotebookMenuBar />
