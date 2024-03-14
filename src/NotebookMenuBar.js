@@ -19,7 +19,7 @@ const popoverPaperStyle = {
 };
 
 const menuItems = {
-  File: ["New", "Open", "Save"],
+  File: ["New", "Open", "Save", "Download"],
   Edit: ["Cut", "Copy", "Paste"],
   View: ["Zoom In", "Zoom Out", "Full Screen"],
   Run: ["Run All", "Run Selected", "Stop"],
@@ -28,7 +28,7 @@ const menuItems = {
   Help: ["Documentation", "About"],
 };
 
-function NotebookMenuBar({ handleLoadClick }) {
+function NotebookMenuBar({ handleLoadClick, handleDownloadClick }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
 
@@ -44,6 +44,11 @@ function NotebookMenuBar({ handleLoadClick }) {
   const handleMenuItemClick = (item) => {
     // 클릭 이벤트 처리
     console.log(`Clicked: ${item}`);
+    if (item === "Download") {
+      handleDownloadClick(); // 다운로드 항목 클릭 시 handleSaveClick 호출
+    } else {
+      console.log(`Clicked: ${item}`);
+    }
   };
 
   return (

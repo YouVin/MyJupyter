@@ -290,7 +290,7 @@ function RushNote({ rushNoteState }) {
       <div style={{ padding: "0px 10px", marginTop: "8px" }}>
         <NotebookMenuBar
           handleLoadClick={handleLoadClick}
-          handleSaveClick={handleDownloadClick}
+          handleDownloadClick={handleDownloadClick}
         />
       </div>
       <div style={{ padding: "0px 10px" }}>
