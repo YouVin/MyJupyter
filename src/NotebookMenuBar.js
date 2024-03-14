@@ -28,7 +28,7 @@ const menuItems = {
   Help: ["Documentation", "About"],
 };
 
-function NotebookMenuBar() {
+function NotebookMenuBar({ handleLoadClick }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
 

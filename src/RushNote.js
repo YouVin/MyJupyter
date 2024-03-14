@@ -173,8 +173,8 @@ function RushNote({ rushNoteState }) {
       },
     ]);
   };
-  // 파일 저장 및 다운로드 함수
-  const handleSaveAndDownloadClick = () => {
+  // 파일 저장 함수
+  const handleSaveClick = () => {
     console.log(title);
 
     if (title) {
@@ -186,13 +186,15 @@ function RushNote({ rushNoteState }) {
 
   // 파일 불러오기 함수
   const handleLoadClick = () => {
-    const fileId = "하이"; // 불러올 파일의 ID 설정
+    const fileId = title; // 불러올 파일의 ID 설정
 
     // 로컬 스토리지에서 데이터 불러오기
-    const savedData = localStorage.getItem(`file_${fileId}`);
+    const savedData = localStorage.getItem(`${fileId}`);
+    console.log("파일 " + fileId + "를 불러옵니다.");
     if (savedData) {
       // JSON 형태의 데이터를 파싱하여 가져옴
       const parsedData = JSON.parse(savedData);
+
       // 가져온 데이터를 cellItems에 설정
       setCellItems(parsedData);
     } else {
@@ -236,6 +238,32 @@ function RushNote({ rushNoteState }) {
   // TopBar 컴포넌트에서 타이틀 변경 시 호출될 함수
   const handleTitleChange = (newTitle) => {
     setTitle(newTitle); // 타이틀 상태 변경
+    console.log(title);
+  };
+
+  // 파일 다운로드 함수
+  const handleDownloadClick = () => {
+    const filename = `${title}.irn`; // 파일명 설정
+
+    // 파일 내용을 JSON 형태로 변환
+    const fileContent = JSON.stringify(cellItems);
+
+    // Blob 객체 생성
+    const blob = new Blob([fileContent], { type: "application/json" });
+
+    // Blob 객체를 URL로 변환
+    const url = URL.createObjectURL(blob);
+
+    // 링크 엘리먼트 생성
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename); // 다운로드 속성 설정
+
+    // 링크 클릭 및 URL 해제
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // 셀 재시작 함수
@@ -260,11 +288,11 @@ function RushNote({ rushNoteState }) {
         <TopBar onTitleChange={handleTitleChange} />
       </AppBar>
       <div style={{ padding: "0px 10px", marginTop: "8px" }}>
-        <NotebookMenuBar />
+        <NotebookMenuBar
+          handleLoadClick={handleLoadClick}
+          handleSaveClick={handleDownloadClick}
+        />
       </div>
-      {/* 불러오기 버튼 */}
-      <button onClick={() => handleLoadClick("1")}>Load</button>
-
       <div style={{ padding: "0px 10px" }}>
         <MenuItemComponent
           addCell={addCellItem}
@@ -298,7 +326,7 @@ function RushNote({ rushNoteState }) {
           }}
           selectedCellId={selectedCellId}
           handleConvertClick={() => handleConvertClick(selectedCellId)}
-          handleSaveAndDownloadClick={handleSaveAndDownloadClick}
+          handleDownloadClick={handleSaveClick}
         />
       </div>
       <div>

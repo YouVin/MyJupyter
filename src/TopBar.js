@@ -4,7 +4,7 @@ import { Toolbar, Typography } from "@mui/material";
 function TopBar({ onTitleChange }) {
   const [lastExecutionTime, setLastExecutionTime] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("Nonamed");
 
   useEffect(() => {
     // 로컬 저장소에서 마지막 실행 시간을 가져옴
