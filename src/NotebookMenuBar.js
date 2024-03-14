@@ -49,6 +49,9 @@ function NotebookMenuBar({ handleLoadClick, handleDownloadClick }) {
     } else {
       console.log(`Clicked: ${item}`);
     }
+    if (item == "Open") {
+      handleLoadClick();
+    }
   };
 
   return (

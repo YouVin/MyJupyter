@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import NotebookMenuBar from "./NotebookMenuBar";
 import MenuItemComponent from "./MenuItemComponent";
 import TextList from "./TextList";
-import { AppBar, Container } from "@mui/material";
-import TopBar from "./TopBar";
+import { Container } from "@mui/material";
 import "./App.css";
 import { marked } from "marked";
 
-function RushNote({ rushNoteState }) {
+function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
   const [cellItems, setCellItems] = useState([
     { id: 1, inputText: "", markdownResult: "", selectedLanguage: "markdown" },
   ]);
@@ -43,7 +42,7 @@ function RushNote({ rushNoteState }) {
         });
         return updatedCellItems;
       });
-    } else if (selectedLanguage === "javascript") {
+    } else if (selectedLanguage === "code") {
       // 셀 상태 업데이트 함수
       try {
         // 콘솔 오버라이딩
@@ -175,12 +174,11 @@ function RushNote({ rushNoteState }) {
   };
   // 파일 저장 함수
   const handleSaveClick = () => {
-    console.log(title);
-
-    if (title) {
+    console.log(currentTitle);
+    if (currentTitle) {
       // 현재 상태를 JSON으로 변환하여 저장
       const jsonState = JSON.stringify(cellItems);
-      localStorage.setItem(`${title}`, jsonState);
+      localStorage.setItem(`${currentTitle}`, jsonState);
     }
   };
 
@@ -234,11 +232,10 @@ function RushNote({ rushNoteState }) {
     const updatedCells = cellItems.filter((cell) => cell.id !== idToDelete);
     setCellItems(updatedCells);
   };
-
   // TopBar 컴포넌트에서 타이틀 변경 시 호출될 함수
   const handleTitleChange = (newTitle) => {
     setTitle(newTitle); // 타이틀 상태 변경
-    console.log(title);
+    onTitleChange(newTitle); // 부모 컴포넌트로 변경된 타이틀 전달
   };
 
   // 파일 다운로드 함수
@@ -281,12 +278,6 @@ function RushNote({ rushNoteState }) {
 
   return (
     <Container maxWidth="lg">
-      <AppBar
-        position="static"
-        style={{ backgroundColor: "white", padding: "8px 0px" }}
-      >
-        <TopBar onTitleChange={handleTitleChange} />
-      </AppBar>
       <div style={{ padding: "0px 10px", marginTop: "8px" }}>
         <NotebookMenuBar
           handleLoadClick={handleLoadClick}
@@ -326,7 +317,7 @@ function RushNote({ rushNoteState }) {
           }}
           selectedCellId={selectedCellId}
           handleConvertClick={() => handleConvertClick(selectedCellId)}
-          handleDownloadClick={handleSaveClick}
+          handleSaveClick={handleSaveClick}
         />
       </div>
       <div>

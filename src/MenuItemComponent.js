@@ -16,11 +16,11 @@ function MenuItemComponent({
   setSelectedLanguage,
   addCell,
   handleConvertClick,
-  handleSaveAndDownloadClick,
   handleCopyCell,
   handlePasteCell,
   handlePauseCell,
   handleRestartCell,
+  handleSaveClick,
 }) {
   //코드 변환 시 초기화
   const handleLanguageChange = (newValue) => {
@@ -36,7 +36,7 @@ function MenuItemComponent({
           variant="contained"
           color="inherit"
           style={{ backgroundColor: "white" }}
-          onClick={handleSaveAndDownloadClick}
+          onClick={handleSaveClick}
         >
           <SaveIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
@@ -118,7 +118,7 @@ function MenuItemComponent({
               style={{ marginLeft: "10px", backgroundColor: "white" }}
             >
               <MenuItem value="markdown">Markdown</MenuItem>
-              <MenuItem value="javascript">JavaScript</MenuItem>
+              <MenuItem value="code">Code</MenuItem>
               <MenuItem value="html">HTML</MenuItem>
             </Select>
 

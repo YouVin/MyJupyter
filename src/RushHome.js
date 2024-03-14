@@ -12,12 +12,9 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import NotebookMenuBar from "./NotebookMenuBar";
-import TopBar from "./TopBar";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import RushNote from "./RushNote";
 import { Link } from "react-router-dom";
-
+import NotebookMenuBar from "./NotebookMenuBar";
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
   const [fileList, setFileList] = useState([]);
@@ -72,12 +69,6 @@ const RushHome = () => {
 
   return (
     <Container maxWidth="lg">
-      <AppBar
-        position="static"
-        style={{ backgroundColor: "white", padding: "8px 0px" }}
-      >
-        <TopBar />
-      </AppBar>
       <NotebookMenuBar />
       <h1>Rush Home</h1>
       <Button
@@ -104,6 +95,7 @@ const RushHome = () => {
           display: "none",
         }}
       />
+
       <div>
         <p>선택한 폴더 경로: {folderPath}</p>
 

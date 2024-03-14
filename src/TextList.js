@@ -81,7 +81,7 @@ function TextList({
                 onChange={handleTextFieldChange}
                 InputProps={{ style: inputStyle }}
               />
-            ) : selectedLanguage === "javascript" ? (
+            ) : selectedLanguage === "code" ? (
               <AceEditor
                 placeholder="코드를 입력해보세요"
                 mode="javascript"

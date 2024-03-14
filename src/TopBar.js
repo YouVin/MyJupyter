@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Toolbar, Typography } from "@mui/material";
+import { Toolbar, Typography, Input, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-function TopBar({ onTitleChange }) {
+function TopBar({ defaultTitle, onTitleChange }) {
   const [lastExecutionTime, setLastExecutionTime] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState("Nonamed");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 로컬 저장소에서 마지막 실행 시간을 가져옴
@@ -13,13 +15,6 @@ function TopBar({ onTitleChange }) {
       setLastExecutionTime(getRelativeTime(new Date(storedLastExecutionTime)));
     }
   }, []);
-
-  useEffect(() => {
-    // 컴포넌트가 마운트되면 window 객체를 사용하여 로직 실행
-    if (window.location.pathname === "/nonamed") {
-      // 로직 실행
-    }
-  }, []); // 컴포넌트가 마운트될 때 한 번만 실행되도록 빈 배열 전달
 
   const getRelativeTime = (dateTime) => {
     const diffInMs = new Date() - dateTime;
@@ -33,15 +28,17 @@ function TopBar({ onTitleChange }) {
       return `${diffInDays}일 전`;
     }
   };
+  const handleEditTitle = () => {
+    setIsEditingTitle(true);
+  };
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
-    // 부모 컴포넌트로 변경된 타이틀 전달
-    onTitleChange(event.target.value);
   };
 
-  const handleTitleClick = () => {
-    setIsEditingTitle(true);
+  const handleConfirmTitle = () => {
+    setIsEditingTitle(false); //
+    onTitleChange(title); // 타이틀 변경 이벤트 발생
   };
 
   return (
@@ -55,34 +52,56 @@ function TopBar({ onTitleChange }) {
         }}
       />
       {window.location.pathname === "/nonamed" && (
-        <input
-          type="text"
-          value={title}
-          onChange={handleTitleChange}
-          onClick={handleTitleClick}
-          readOnly={!isEditingTitle}
-          style={{
-            marginLeft: "20px",
-            color: "black",
-            fontSize: "20px",
-            border: "none",
-            outline: "none",
-            backgroundColor: "transparent",
-            cursor: "pointer",
-          }}
-        />
-      )}
-      {window.location.pathname === "/nonamed" && (
-        <Typography
-          sx={{
-            marginLeft: "20px",
-            color: "black",
-            fontSize: "15px",
-          }}
-          variant="h6"
-        >
-          Last : {lastExecutionTime}
-        </Typography>
+        <>
+          {isEditingTitle ? (
+            <Input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              autoFocus
+              style={{
+                marginLeft: "20px",
+                color: "black",
+                fontSize: "20px",
+                border: "none",
+                outline: "none",
+                backgroundColor: "transparent",
+              }}
+            />
+          ) : (
+            <Typography
+              onClick={handleEditTitle}
+              sx={{
+                marginLeft: "20px",
+                color: "black",
+                fontSize: "20px",
+                cursor: "pointer",
+              }}
+              variant="h6"
+            >
+              {title}
+            </Typography>
+          )}
+          <Typography
+            sx={{
+              marginLeft: "20px",
+              color: "black",
+              fontSize: "15px",
+            }}
+            variant="h6"
+          >
+            Last : {lastExecutionTime}
+          </Typography>
+          {isEditingTitle && (
+            <Button
+              onClick={handleConfirmTitle}
+              variant="outlined"
+              style={{ marginLeft: "10px" }}
+            >
+              확인
+            </Button>
+          )}
+        </>
       )}
     </Toolbar>
   );
