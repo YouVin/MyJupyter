@@ -1,33 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Toolbar, Typography, Input, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
-function TopBar({ defaultTitle, onTitleChange }) {
+function TopBar({ defaultTitle, onTitleChange, handleSetTimeData, savetime }) {
   const [lastExecutionTime, setLastExecutionTime] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState("Nonamed");
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    // 로컬 저장소에서 마지막 실행 시간을 가져옴
-    const storedLastExecutionTime = localStorage.getItem("lastExecutionTime");
-    if (storedLastExecutionTime) {
-      setLastExecutionTime(getRelativeTime(new Date(storedLastExecutionTime)));
-    }
-  }, []);
-
-  const getRelativeTime = (dateTime) => {
-    const diffInMs = new Date() - dateTime;
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInDays === 0) {
-      return "오늘";
-    } else if (diffInDays === 1) {
-      return "어제";
-    } else {
-      return `${diffInDays}일 전`;
-    }
-  };
   const handleEditTitle = () => {
     setIsEditingTitle(true);
   };
@@ -90,7 +68,7 @@ function TopBar({ defaultTitle, onTitleChange }) {
             }}
             variant="h6"
           >
-            Last : {lastExecutionTime}
+            Last : {savetime} {/* savetime 사용 */}
           </Typography>
           {isEditingTitle && (
             <Button

@@ -6,14 +6,46 @@ import { Container } from "@mui/material";
 import "./App.css";
 import { marked } from "marked";
 
-function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
+function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
   const [cellItems, setCellItems] = useState([
     { id: 1, inputText: "", markdownResult: "", selectedLanguage: "markdown" },
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
   const [title, setTitle] = useState("Nonamed"); // 타이틀 상태
+  const [savetime, setSaveTime] = useState("");
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
+
+  const handleUpdateLastExecutionTime = () => {
+    const now = new Date();
+    setSaveTime(getRelativeTime(now));
+    setSaveData(savetime);
+    console.log(setSaveData(savetime));
+  };
+
+  // 시간 변환 함수
+  const getRelativeTime = (dateTime) => {
+    const diffInMs = new Date() - dateTime;
+    const diffInSeconds = Math.floor(diffInMs / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInDays === 0) {
+      if (diffInMinutes < 1) {
+        return `${diffInSeconds}초 전`;
+      }
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes}분 전`;
+      } else if (diffInHours < 24) {
+        return `${diffInHours}시간 전`;
+      } else {
+        return "오늘";
+      }
+    } else {
+      return `${diffInDays}일 전`;
+    }
+  };
 
   //셀 변환 코드 실행 함수
   const handleConvertClick = (id) => {
@@ -174,17 +206,23 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
   };
   // 파일 저장 함수
   const handleSaveClick = () => {
+    const now = new Date();
     console.log(currentTitle);
     if (currentTitle) {
-      // 현재 상태를 JSON으로 변환하여 저장
-      const jsonState = JSON.stringify(cellItems);
+      // 현재 상태를 JSON으로 변환하여 저장합니다.
+      const jsonState = JSON.stringify({
+        cellItems: cellItems,
+        saveTime: now, // 현재 시간을 저장합니다.
+      });
       localStorage.setItem(`${currentTitle}`, jsonState);
+
+      // 저장 시간 업데이트
+      handleUpdateLastExecutionTime();
     }
   };
 
-  // 파일 불러오기 함수
   const handleLoadClick = () => {
-    const fileId = title; // 불러올 파일의 ID 설정
+    const fileId = currentTitle; // 불러올 파일의 ID 설정
 
     // 로컬 스토리지에서 데이터 불러오기
     const savedData = localStorage.getItem(`${fileId}`);
@@ -194,7 +232,12 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
       const parsedData = JSON.parse(savedData);
 
       // 가져온 데이터를 cellItems에 설정
-      setCellItems(parsedData);
+      setCellItems(parsedData.cellItems);
+
+      // 마지막으로 저장된 시간을 가져와서 savetime 업데이트
+      const savedTime = new Date(parsedData.saveTime);
+      setSaveTime(getRelativeTime(savedTime));
+      setSaveData(getRelativeTime(savedTime)); // 불러올 때도 savetime을 업데이트
     } else {
       // 해당 파일이 없는 경우에 대한 처리
       console.error(`File with id ${fileId} not found.`);
@@ -223,6 +266,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
     setSelectedCellId(id);
     console.log(id);
   };
+
   // 셀 삭제 로직
   const deleteCell = (idToDelete) => {
     if (idToDelete === null) {
@@ -232,6 +276,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
     const updatedCells = cellItems.filter((cell) => cell.id !== idToDelete);
     setCellItems(updatedCells);
   };
+
   // TopBar 컴포넌트에서 타이틀 변경 시 호출될 함수
   const handleTitleChange = (newTitle) => {
     setTitle(newTitle); // 타이틀 상태 변경
@@ -240,7 +285,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange }) {
 
   // 파일 다운로드 함수
   const handleDownloadClick = () => {
-    const filename = `${title}.irn`; // 파일명 설정
+    const filename = `${currentTitle}.irn`; // 파일명 설정
 
     // 파일 내용을 JSON 형태로 변환
     const fileContent = JSON.stringify(cellItems);
