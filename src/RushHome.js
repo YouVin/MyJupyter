@@ -69,7 +69,7 @@ const RushHome = () => {
 
   return (
     <Container maxWidth="lg">
-      <NotebookMenuBar />
+      <NotebookMenuBar notebookType="RushHome" />
       <h1>Rush Home</h1>
       <Button
         variant="outlined"

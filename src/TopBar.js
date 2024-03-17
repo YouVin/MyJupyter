@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Toolbar, Typography, Input, Button } from "@mui/material";
 
-function TopBar({ defaultTitle, onTitleChange, handleSetTimeData, savetime }) {
-  const [lastExecutionTime, setLastExecutionTime] = useState(null);
+function TopBar({ onTitleChange, savetime }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState("Nonamed");
 

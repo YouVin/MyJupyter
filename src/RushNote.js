@@ -18,8 +18,9 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
 
   const handleUpdateLastExecutionTime = () => {
     const now = new Date();
-    setSaveTime(getRelativeTime(now));
-    setSaveData(savetime);
+    const relativeTime = getRelativeTime(now); // 현재 시간을 상대 시간으로 변환
+    setSaveTime(relativeTime); // savetime을 업데이트
+    setSaveData(relativeTime); // savetime을 저장 데이터로 업데이트
     console.log(setSaveData(savetime));
   };
 
@@ -327,6 +328,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
         <NotebookMenuBar
           handleLoadClick={handleLoadClick}
           handleDownloadClick={handleDownloadClick}
+          notebookType="RushNote"
         />
       </div>
       <div style={{ padding: "0px 10px" }}>

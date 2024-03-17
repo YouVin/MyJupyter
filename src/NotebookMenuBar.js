@@ -1,36 +1,32 @@
 import React, { useState } from "react";
 import {
-  Popover,
   Typography,
   List,
-  ListItem,
+  ListItemButton,
   Button,
+  Popover,
   Paper,
 } from "@mui/material";
 
-const buttonStyle = {
-  textTransform: "none",
-  cursor: "pointer",
-  color: "black",
-};
-
-const popoverPaperStyle = {
-  cursor: "default", // 팝업 창에 마우스를 가져다 대면 손바닥 모양으로 변경
-};
-
-const menuItems = {
-  File: ["New", "Open", "Save", "Download"],
-  Edit: ["Cut", "Copy", "Paste"],
-  View: ["Zoom In", "Zoom Out", "Full Screen"],
-  Run: ["Run All", "Run Selected", "Stop"],
-  Kernel: ["Change Kernel", "Restart Kernel", "Shutdown Kernel"],
-  Settings: ["General Settings", "User Preferences"],
-  Help: ["Documentation", "About"],
-};
-
-function NotebookMenuBar({ handleLoadClick, handleDownloadClick }) {
+function NotebookMenuBar({
+  handleLoadClick,
+  handleDownloadClick,
+  notebookType,
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
+
+  const allMenuItems = {
+    File: ["New", "Open", "Save", "Download"],
+    Edit: ["Cut", "Copy", "Paste"],
+    View: ["Zoom In", "Zoom Out", "Full Screen"],
+    Run: ["Run All", "Run Selected", "Stop"],
+    Kernel: ["Change Kernel", "Restart Kernel", "Shutdown Kernel"],
+    Settings: ["General Settings", "User Preferences"],
+    Help: ["Documentation", "About"],
+  };
+
+  const disabledMenuItemsForRushHome = ["Save", "Download", "Cut", "Zoom In"]; // RushHome에서 비활성화 할 항목
 
   const handleButtonClick = (event, label) => {
     setAnchorLabel(label);
@@ -42,25 +38,36 @@ function NotebookMenuBar({ handleLoadClick, handleDownloadClick }) {
   };
 
   const handleMenuItemClick = (item) => {
-    // 클릭 이벤트 처리
     console.log(`Clicked: ${item}`);
     if (item === "Download") {
-      handleDownloadClick(); // 다운로드 항목 클릭 시 handleSaveClick 호출
-    } else {
-      console.log(`Clicked: ${item}`);
-    }
-    if (item == "Open") {
+      handleDownloadClick();
+    } else if (item === "Open") {
       handleLoadClick();
     }
+    setAnchorEl(null);
+  };
+
+  const getMenuItems = () => {
+    if (anchorLabel && allMenuItems[anchorLabel]) {
+      return allMenuItems[anchorLabel];
+    }
+    return [];
   };
 
   return (
     <div>
-      {Object.keys(menuItems).map((label, index) => (
+      {Object.keys(allMenuItems).map((label, index) => (
         <Button
           key={index}
-          style={buttonStyle}
+          variant="text"
           onMouseEnter={(e) => handleButtonClick(e, label)}
+          disabled={
+            !notebookType ||
+            (notebookType === "RushHome" &&
+              disabledMenuItemsForRushHome.includes(label))
+          }
+          aria-haspopup="true"
+          style={{ color: "#000000" }}
         >
           {label}
         </Button>
@@ -79,16 +86,40 @@ function NotebookMenuBar({ handleLoadClick, handleDownloadClick }) {
           horizontal: "left",
         }}
       >
-        <Paper style={popoverPaperStyle}>
+        <Paper>
           <List>
-            {menuItems[anchorLabel]?.map((item, index) => (
-              <ListItem key={index} onClick={() => handleMenuItemClick(item)}>
+            {getMenuItems().map((item, index) => (
+              <ListItemButton
+                key={index}
+                onClick={() => handleMenuItemClick(item)}
+                disabled={
+                  notebookType === "RushHome" &&
+                  disabledMenuItemsForRushHome.includes(item)
+                }
+                style={{
+                  backgroundColor: notebookType === "RushNote" ? "white" : "",
+                }}
+              >
                 <Typography>{item}</Typography>
-              </ListItem>
+              </ListItemButton>
             ))}
           </List>
         </Paper>
       </Popover>
+
+      {anchorEl && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            zIndex: -1,
+          }}
+          onClick={handleClosePopover}
+        />
+      )}
     </div>
   );
 }
