@@ -329,6 +329,10 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
           handleLoadClick={handleLoadClick}
           handleDownloadClick={handleDownloadClick}
           notebookType="RushNote"
+          handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
+          handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
+          deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
+          selectedCellId={selectedCellId}
         />
       </div>
       <div style={{ padding: "0px 10px" }}>

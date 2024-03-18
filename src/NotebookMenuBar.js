@@ -12,13 +12,17 @@ function NotebookMenuBar({
   handleLoadClick,
   handleDownloadClick,
   notebookType,
+  handleCopyCell,
+  handlePasteCell,
+  deleteCell,
+  selectedCellId,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
 
   const allMenuItems = {
     File: ["New", "Open", "Save", "Download"],
-    Edit: ["Cut", "Copy", "Paste"],
+    Edit: ["Cut Cell", "Copy Cell", "Paste Cell", "Undo", "Redo"],
     View: ["Zoom In", "Zoom Out", "Full Screen"],
     Run: ["Run All", "Run Selected", "Stop"],
     Kernel: ["Change Kernel", "Restart Kernel", "Shutdown Kernel"],
@@ -26,7 +30,14 @@ function NotebookMenuBar({
     Help: ["Documentation", "About"],
   };
 
-  const disabledMenuItemsForRushHome = ["Save", "Download", "Cut", "Zoom In"]; // RushHome에서 비활성화 할 항목
+  const disabledMenuItemsForRushHome = [
+    "Save",
+    "Download",
+    "Cut Cell",
+    "Copy Cell",
+    "Paste Cell",
+    "Zoom In",
+  ]; // RushHome에서 비활성화 할 항목
 
   const handleButtonClick = (event, label) => {
     setAnchorLabel(label);
@@ -43,6 +54,12 @@ function NotebookMenuBar({
       handleDownloadClick();
     } else if (item === "Open") {
       handleLoadClick();
+    } else if (item === "Cut Cell") {
+      deleteCell(selectedCellId);
+    } else if (item === "Copy Cell") {
+      handleCopyCell();
+    } else if (item === "Paste Cell") {
+      handlePasteCell();
     }
     setAnchorEl(null);
   };
@@ -85,6 +102,7 @@ function NotebookMenuBar({
           vertical: "top",
           horizontal: "left",
         }}
+        slotProps={{ paper: { style: { width: "200px" } } }}
       >
         <Paper>
           <List>
