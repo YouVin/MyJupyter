@@ -1,5 +1,5 @@
 import React from "react";
-import { MenuItem, IconButton, Select, Toolbar } from "@mui/material";
+import { IconButton, Toolbar, FormControl, NativeSelect } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -110,21 +110,23 @@ function MenuItemComponent({
         >
           <ReplayIcon sx={{ color: "gray" }} style={{ fontSize: "15px" }} />
         </IconButton>
-        {
-          <div style={{ padding: "0px 10px" }}>
-            <Select
+        <div style={{ marginLeft: "15px" }}>
+          <FormControl>
+            <NativeSelect
               value={selectedLanguage}
-              onChange={(e) => handleLanguageChange(e.target.value)} // handleLanguageChange 함수로 변경
-              style={{ marginLeft: "10px", backgroundColor: "white" }}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              inputProps={{
+                name: "language",
+                id: "select-language",
+              }}
+              style={{ padding: "8px", minWidth: "120px" }}
             >
-              <MenuItem value="markdown">Markdown</MenuItem>
-              <MenuItem value="code">Code</MenuItem>
-              <MenuItem value="html">HTML</MenuItem>
-            </Select>
-
-            {/* 변환 버튼 */}
-          </div>
-        }
+              <option value="markdown">Markdown</option>
+              <option value="code">Code</option>
+              <option value="html">HTML</option>
+            </NativeSelect>
+          </FormControl>
+        </div>
       </Toolbar>
     </div>
   );

@@ -16,14 +16,6 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
   const [savetime, setSaveTime] = useState("");
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
 
-  const handleUpdateLastExecutionTime = () => {
-    const now = new Date();
-    const relativeTime = getRelativeTime(now); // 현재 시간을 상대 시간으로 변환
-    setSaveTime(relativeTime); // savetime을 업데이트
-    setSaveData(relativeTime); // savetime을 저장 데이터로 업데이트
-    console.log(setSaveData(savetime));
-  };
-
   // 시간 변환 함수
   const getRelativeTime = (dateTime) => {
     const diffInMs = new Date() - dateTime;
@@ -217,11 +209,11 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
       });
       localStorage.setItem(`${currentTitle}`, jsonState);
 
-      // 저장 시간 업데이트
-      handleUpdateLastExecutionTime();
+      setSaveTime(getRelativeTime(now));
+      setSaveData(getRelativeTime(now)); // savetime을 저장 데이터로 업데이트
     }
   };
-
+  //파일 불러오기
   const handleLoadClick = () => {
     const fileId = currentTitle; // 불러올 파일의 ID 설정
 

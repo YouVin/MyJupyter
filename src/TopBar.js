@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Toolbar, Typography, Input, Button } from "@mui/material";
 
-function TopBar({ onTitleChange, savetime }) {
+function TopBar({ onTitleChange, savetime, setSaveTime }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState("Nonamed");
 
@@ -12,10 +12,10 @@ function TopBar({ onTitleChange, savetime }) {
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
-
   const handleConfirmTitle = () => {
     setIsEditingTitle(false); //
     onTitleChange(title); // 타이틀 변경 이벤트 발생
+    setSaveTime(null); // savetime을 null로 설정
   };
 
   return (
@@ -67,7 +67,7 @@ function TopBar({ onTitleChange, savetime }) {
             }}
             variant="h6"
           >
-            Last : {savetime} {/* savetime 사용 */}
+            Last: {savetime ? savetime : null}
           </Typography>
           {isEditingTitle && (
             <Button

@@ -28,6 +28,7 @@ function App() {
             onTitleChange={setCurrentTitle}
             handleSetTimeData={handleSetTimeData}
             savetime={savetime} // savetime 전달
+            setSaveTime={setSaveTime}
           />
         </AppBar>
         <Routes>

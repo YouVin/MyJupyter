@@ -102,7 +102,7 @@ function NotebookMenuBar({
           vertical: "top",
           horizontal: "left",
         }}
-        slotProps={{ paper: { style: { width: "200px" } } }}
+        slotProps={{ paper: { style: { maxWidth: "300px" } } }}
       >
         <Paper>
           <List>
