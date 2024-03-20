@@ -134,6 +134,7 @@ function NotebookMenuBar({
             bottom: 0,
             right: 0,
             zIndex: -1,
+            maxWidth: "200",
           }}
           onClick={handleClosePopover}
         />

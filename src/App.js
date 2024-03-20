@@ -20,9 +20,14 @@ function App() {
       <Container maxWidth="lg">
         <AppBar
           position="static"
-          style={{ backgroundColor: "white", padding: "8px 0px" }}
+          style={{
+            backgroundColor: "white",
+            padding: "0px 0px",
+            boxShadow: "none",
+          }}
         >
           {/* TopBar에 savetime 전달 */}
+
           <TopBar
             defaultTitle={currentTitle}
             onTitleChange={setCurrentTitle}
@@ -31,6 +36,7 @@ function App() {
             setSaveTime={setSaveTime}
           />
         </AppBar>
+
         <Routes>
           <Route path="/" element={<RushHome />} />
           <Route
