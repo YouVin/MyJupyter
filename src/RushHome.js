@@ -74,39 +74,38 @@ const RushHome = () => {
         }}
       ></Divider>
       <Container style={{ flexGrow: 1, paddingTop: "10px" }}>
-        <div style={{ paddingLeft: "5px" }}>
-          <h1>Rush Home</h1>
-          <Button
-            variant="outlined"
-            startIcon={<FolderOpenIcon />}
-            onClick={handleButtonClick}
-          >
-            폴더 불러오기
-          </Button>
-          <Button variant="outlined" onClick={createNewFile}>
-            <Link to="/nonamed" target="_blank">
-              파일 생성하기
-            </Link>
-          </Button>
-          <input
-            type="file"
-            id="folderInput"
-            ref={fileInputRef}
-            accept=""
-            webkitdirectory="true"
-            directory="true"
-            onChange={handleFolderFile}
-            style={{
-              display: "none",
-            }}
-          />
-          <p>선택한 폴더 경로: {folderPath}</p>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FolderOpenIcon style={{ marginRight: "10px" }} />
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
+            File
+          </Typography>
+          <div>
+            <Button
+              variant="outlined"
+              onClick={createNewFile}
+              style={{ marginRight: "10px" }}
+            >
+              <Link
+                to="/nonamed"
+                target="_blank"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                파일 생성하기
+              </Link>
+            </Button>
+            <Button variant="outlined" onClick={handleButtonClick}>
+              폴더 불러오기
+            </Button>
+          </div>
         </div>
-        <Divider
-          sx={{
-            backgroundColor: "black",
-          }}
-        ></Divider>
+        <div
+          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+        >
+          <Typography variant="body1" style={{ flexGrow: 1 }}>
+            내가 따로 텍스트를 적어둘 예정
+          </Typography>
+          <Typography variant="body1">{folderPath}</Typography>
+        </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <TableContainer component={Paper}>
             <Table aria-label="file table">
