@@ -83,115 +83,225 @@ const RushHome = () => {
           marginRight: "25px",
         }}
       ></Divider>
-      <Container style={{ flexGrow: 1, paddingTop: "30px" }}>
+      <Container style={{ flexGrow: 1, paddingTop: "20px" }}>
         <div>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            textColor="inherit"
-            indicatorColor="inherit"
-            sx={{
-              "& .MuiTabs-indicator": {
-                backgroundColor: "white", // 인디케이터 색상을 파랑으로 설정
-              },
-              alignItems: "center",
-              minHeight: 20,
-              height: 30,
-              minWidth: "auto",
-            }}
-          >
-            <Tab
-              icon={<FolderIcon sx={{ fontSize: 18 }} />}
-              iconPosition="start"
-              disableRipple
+          <div>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              textColor="inherit"
+              indicatorColor="inherit"
               sx={{
-                borderBottom: "none", // 아래 border 제거
-                fontSize: 12,
-                fontWeight: "bold",
+                "& .MuiTabs-indicator": {
+                  backgroundColor: "white",
+                },
+                padding: 0.5,
+                alignItems: "center",
+                minHeight: 20,
+                height: 25,
+                minWidth: "auto",
               }}
-              label="Files" // 직접 label에 텍스트를 작성
-            />
-            <Tab
-              icon={<StopCircleIcon sx={{ fontSize: 20 }} />}
-              iconPosition="start"
-              disableRipple
-              sx={{
-                borderBottom: "none", // 아래 border 제거
-                fontWeight: "bold",
-                fontSize: 12,
-                color: "black",
-              }}
-              label="Run" // 직접 label에 텍스트를 작성
-            />
-          </Tabs>
-
-          <div style={{ paddingLeft: "5px", marginTop: "10px" }}>
-            <Button
-              variant="outlined"
-              startIcon={<FolderOpenIcon />}
-              onClick={handleButtonClick}
             >
-              폴더 불러오기
-            </Button>
-            <Button variant="outlined" onClick={createNewFile}>
-              <Link to="/nonamed" target="_blank">
-                파일 생성하기
-              </Link>
-            </Button>
-            <input
-              type="file"
-              id="folderInput"
-              ref={fileInputRef}
-              accept=""
-              webkitdirectory="true"
-              directory="true"
-              onChange={handleFolderFile}
-              style={{
-                display: "none",
-              }}
-            />
-            <p>선택한 폴더 경로: {folderPath}</p>
+              <Tab
+                icon={<FolderIcon sx={{ fontSize: 18 }} />}
+                iconPosition="start"
+                disableRipple
+                sx={{
+                  borderBottom: "none",
+                  fontSize: 12,
+                  fontWeight: "bold",
+                  border: "1px solid",
+                }}
+                label="Files"
+              />
+              <Tab
+                icon={<StopCircleIcon sx={{ fontSize: 20 }} />}
+                iconPosition="start"
+                disableRipple
+                sx={{
+                  borderBottom: "none",
+                  fontWeight: "bold",
+                  fontSize: 12,
+                  color: "black",
+                  borderRight: "1px solid",
+                }}
+                label="Run"
+              />
+            </Tabs>
+
+            {value === 0 && (
+              <div
+                style={{
+                  paddingLeft: "5px",
+                  marginTop: "15px",
+                  alignItems: "center",
+                  marginBottom: "15px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body1">
+                    Select items to perform actions on them.
+                  </Typography>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <Button
+                      variant="outlined"
+                      onClick={createNewFile}
+                      style={{
+                        padding: "8px",
+                        fontSize: "10px",
+                        color: "black",
+                        textDecoration: "none", // 링크의 밑줄을 없애줍니다.
+                        border: "1px solid black", // 버튼의 테두리를 검정색으로 설정합니다.
+                      }}
+                    >
+                      <Link
+                        to="/nonamed"
+                        target="_blank"
+                        style={{ color: "black", textDecoration: "none" }}
+                      >
+                        New
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<FolderOpenIcon />}
+                      onClick={handleButtonClick}
+                      style={{
+                        padding: "7px",
+                        fontSize: "10px",
+                        color: "black",
+                        border: "1px solid black", // 버튼의 테두리를 검정색으로 설정합니다.
+                      }}
+                    >
+                      Upload
+                    </Button>
+                    <input
+                      type="file"
+                      id="folderInput"
+                      ref={fileInputRef}
+                      accept=""
+                      webkitdirectory="true"
+                      directory="true"
+                      onChange={handleFolderFile}
+                      style={{
+                        display: "none",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    marginTop: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: 14,
+                    color: "grey",
+                    gap: "5px",
+                  }}
+                >
+                  <FolderIcon style={{ fontSize: 15 }} />
+                  <div>/</div>
+                  <div>{folderPath}</div>
+                </div>
+              </div>
+            )}
+            {value === 0 && (
+              <div
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <TableContainer component={Paper}>
+                  <Table aria-label="file table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          style={{
+                            width: "33%",
+                            border: "1px solid rgba(169, 169, 169,0.4)",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontWeight: "bold", fontSize: 15 }}
+                          >
+                            이름
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            width: "28%",
+                            border: "1px solid rgba(169, 169, 169,0.4)",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontWeight: "bold", fontSize: 15 }}
+                          >
+                            날짜
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            width: "14%",
+                            border: "1px solid rgba(169, 169, 169,0.4)",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontWeight: "bold", fontSize: 15 }}
+                          >
+                            유형
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            width: "18%",
+                            border: "1px solid rgba(169, 169, 169,0.4)",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontWeight: "bold", fontSize: 15 }}
+                          >
+                            크기
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                  </Table>
+                </TableContainer>
+              </div>
+            )}
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <TableContainer component={Paper}>
-              <Table aria-label="file table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ width: "43%" }}>
-                      <Typography variant="subtitle1">이름</Typography>
-                    </TableCell>
-                    <TableCell style={{ width: "24.5%" }}>
-                      <Typography variant="subtitle1">날짜</Typography>
-                    </TableCell>
-                    <TableCell style={{ width: "15%" }}>
-                      <Typography variant="subtitle1">유형</Typography>
-                    </TableCell>
-                    <TableCell style={{ width: "20%" }}>
-                      <Typography variant="subtitle1">크기</Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-              </Table>
-            </TableContainer>
-          </div>
-          <div style={{ maxHeight: "65vh", overflowY: "auto" }}>
-            <TableContainer component={Paper}>
-              <Table aria-label="file table">
-                <TableBody>
-                  {fileList.map((file, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{file.name}</TableCell>
-                      <TableCell>
-                        {file.lastModifiedDate.toLocaleString()}
-                      </TableCell>
-                      <TableCell>{file.type}</TableCell>
-                      <TableCell>{file.size} bytes</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
+          {value === 0 && (
+            <div style={{ maxHeight: "65vh", overflowY: "auto" }}>
+              <TableContainer component={Paper}>
+                <Table aria-label="file table">
+                  <TableBody>
+                    {fileList.map((file, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{file.name}</TableCell>
+                        <TableCell>
+                          {file.lastModifiedDate.toLocaleString()}
+                        </TableCell>
+                        <TableCell>{file.type}</TableCell>
+                        <TableCell>{file.size} bytes</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          )}
         </div>
       </Container>
     </div>
