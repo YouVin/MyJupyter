@@ -7,6 +7,7 @@ function TopBar({ onTitleChange, savetime, setSaveTime }) {
 
   const handleEditTitle = () => {
     setIsEditingTitle(true);
+    handleTitleClick();
   };
 
   const handleTitleChange = (event) => {
@@ -17,6 +18,33 @@ function TopBar({ onTitleChange, savetime, setSaveTime }) {
     setIsEditingTitle(false);
     onTitleChange(title);
     setSaveTime(null);
+    console.log(title);
+
+    // 로컬 스토리지에서 해당 키(title)의 값을 가져옴
+    let existingData = localStorage.getItem(title);
+    if (existingData) {
+      // 기존 값이 있을 경우 기존 값을 파싱하여 활성화 여부를 추가하고 다시 문자열로 변환하여 저장
+      existingData = JSON.parse(existingData);
+      existingData.isActive = true;
+      localStorage.setItem(title, JSON.stringify(existingData));
+    } else {
+      // 기존 값이 없을 경우 새로운 키를 생성하고 활성화 여부를 추가하여 저장
+      localStorage.setItem(title, JSON.stringify({ isActive: true }));
+    }
+  };
+
+  const handleTitleClick = () => {
+    // 타이틀이 클릭되어 편집 모드로 전환될 때 현재 타이틀의 로컬스토리지의 isActive 값을 false로 변경
+    let existingData = localStorage.getItem(title);
+    if (existingData) {
+      // 기존 값이 있을 경우 기존 값을 파싱하여 활성화 여부를 추가하고 다시 문자열로 변환하여 저장
+      existingData = JSON.parse(existingData);
+      existingData.isActive = false;
+      localStorage.setItem(title, JSON.stringify(existingData));
+    } else {
+      // 기존 값이 없을 경우 새로운 키를 생성하고 활성화 여부를 추가하여 저장
+      localStorage.setItem(title, JSON.stringify({ isActive: false }));
+    }
   };
 
   return (

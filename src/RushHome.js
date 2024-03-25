@@ -19,6 +19,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import { Link } from "react-router-dom";
 import NotebookMenuBar from "./NotebookMenuBar";
+import HistoryPage from "./HistoryPage";
 
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
@@ -56,10 +57,6 @@ const RushHome = () => {
     const currentFolderPath = folderPath;
     const newFileName = "nonamed.irn";
     const newFilePath = currentFolderPath + "/" + newFileName;
-
-    const anchor = document.createElement("a");
-    anchor.download = newFileName;
-    anchor.click();
   };
 
   const handleButtonClick = () => {
@@ -128,7 +125,6 @@ const RushHome = () => {
                 label="Run"
               />
             </Tabs>
-
             {value === 0 && (
               <div
                 style={{
@@ -151,7 +147,6 @@ const RushHome = () => {
                   <div style={{ display: "flex", gap: "10px" }}>
                     <Button
                       variant="outlined"
-                      onClick={createNewFile}
                       style={{
                         padding: "8px",
                         fontSize: "10px",
@@ -303,6 +298,19 @@ const RushHome = () => {
             </div>
           )}
         </div>
+        {value === 1 && (
+          <div
+            style={{
+              paddingLeft: "5px",
+              marginTop: "15px",
+              alignItems: "center",
+              marginBottom: "15px",
+            }}
+          >
+            {/* History 탭의 내용 */}
+            <HistoryPage />
+          </div>
+        )}
       </Container>
     </div>
   );
