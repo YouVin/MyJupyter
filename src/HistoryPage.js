@@ -1,68 +1,149 @@
 import React, { useState, useEffect } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
+  Typography,
+  Divider,
 } from "@mui/material";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
 
 const HistoryPage = () => {
-  const [history, setHistory] = useState([]);
+  const [savedHistory, setSavedHistory] = useState([]);
+  const [unsavedHistory, setUnsavedHistory] = useState([]);
 
   useEffect(() => {
     const loadAllDataFromLocalStorage = () => {
-      const allData = [];
+      const savedData = [];
+      const unsavedData = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         const value = JSON.parse(localStorage.getItem(key));
-        allData.push({ key, ...value });
+        if (value.saveTime) {
+          savedData.push({ key, ...value });
+        } else {
+          unsavedData.push({ key, ...value });
+        }
       }
-      return allData;
+      return { saved: savedData, unsaved: unsavedData };
     };
 
     // 모든 데이터 불러오기
-    const allData = loadAllDataFromLocalStorage();
-    console.log(allData);
+    const { saved, unsaved } = loadAllDataFromLocalStorage();
+    console.log(saved, unsaved);
 
-    setHistory(allData);
+    // 시간순으로 정렬
+    saved.sort((a, b) => new Date(b.saveTime) - new Date(a.saveTime));
+
+    setSavedHistory(saved);
+    setUnsavedHistory(unsaved);
   }, []);
+
+  // 시간을 포맷하는 함수
+  const formatTimeAgo = (time) => {
+    if (!time) {
+      return "not saved";
+    }
+
+    const seconds = Math.floor((new Date() - new Date(time)) / 1000);
+    let interval = Math.floor(seconds / 31536000);
+
+    if (interval > 1) {
+      return `${interval} years ago`;
+    }
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+      return `${interval} months ago`;
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+      return `${interval} days ago`;
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+      return `${interval} hours ago`;
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+      return `${interval} minutes ago`;
+    }
+    return `${Math.floor(seconds)} seconds ago`;
+  };
 
   return (
     <div>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>저장한 title 이름</TableCell>
-              <TableCell>저장된 날짜</TableCell>
-              <TableCell>저장된 내용</TableCell>
-              <TableCell>활동중</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {history.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.key}</TableCell>
-                <TableCell>{item.saveTime}</TableCell>
-                <TableCell>
-                  {item.cellItems &&
-                    item.cellItems.map((cell, cellIndex) => (
-                      <div key={cellIndex}>
-                        inputText: {cell.inputText}, markdownResult:{" "}
-                        {cell.markdownResult}, selectedLanguage:{" "}
-                        {cell.selectedLanguage}
-                      </div>
-                    ))}
-                </TableCell>
-                <TableCell>{item.isActive ? "TRUE" : "FALSE"}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Typography variant="h5" gutterBottom>
+        Saved History
+      </Typography>
+      <Divider sx={{ backgroundColor: "rgba(0, 0, 51, 1)", marginTop: 3 }} />
+      <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 3 }}>
+        <List component="div">
+          {savedHistory.map((item, index) => (
+            <ListItem
+              key={index}
+              sx={{
+                border: "1px solid rgba(0, 0, 51, 0.3)",
+                borderRadius: 1,
+                borderTop:
+                  index === 0 ? "1px solid rgba(0, 0, 51, 0.3)" : "none",
+                borderBottom: "1px solid rgba(0, 0, 51, 0.3)",
+              }}
+            >
+              <ListItemText
+                primary={`Update ${item.key}`}
+                secondary={`create ${
+                  item.cellItems ? item.cellItems.length : 0
+                } cellItems • ${formatTimeAgo(item.saveTime)}`}
+              />
+              <Avatar>
+                {item.isActive ? (
+                  <FiberManualRecordIcon sx={{ color: "green" }} />
+                ) : (
+                  <FiberManualRecordOutlinedIcon />
+                )}
+              </Avatar>
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+
+      <Typography variant="h5" gutterBottom sx={{ marginTop: 3 }}>
+        Unsaved History
+      </Typography>
+      <Divider sx={{ backgroundColor: "rgba(0, 0, 51, 1)", marginTop: 3 }} />
+      <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 3 }}>
+        <List component="div">
+          {unsavedHistory.map((item, index) => (
+            <ListItem
+              key={index}
+              sx={{
+                border: "1px solid rgba(0, 0, 51, 0.3)",
+                borderRadius: 1,
+                borderTop:
+                  index === 0 ? "1px solid rgba(0, 0, 51, 0.3)" : "none",
+                borderBottom: "1px solid rgba(0, 0, 51, 0.3)",
+              }}
+            >
+              <ListItemText
+                primary={`Update ${item.key}`}
+                secondary={`create ${
+                  item.cellItems ? item.cellItems.length : 1
+                } cellItems • no save time`}
+              />
+              <Avatar>
+                {item.isActive ? (
+                  <FiberManualRecordIcon sx={{ color: "green" }} />
+                ) : (
+                  <FiberManualRecordOutlinedIcon />
+                )}
+              </Avatar>
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
     </div>
   );
 };
