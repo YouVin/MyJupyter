@@ -17,7 +17,6 @@ import {
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
-import { Link } from "react-router-dom";
 import NotebookMenuBar from "../components/NotebookMenuBar";
 import HistoryPage from "./HistoryPage";
 
@@ -60,7 +59,7 @@ const RushHome = () => {
   };
 
   const handleButtonClick = () => {
-    fileInputRef.current.click();
+    window.open("/nonamed", "_blank"); // 새 창으로 열기
   };
 
   return (
@@ -151,17 +150,12 @@ const RushHome = () => {
                         padding: "8px",
                         fontSize: "10px",
                         color: "black",
-                        textDecoration: "none", // 링크의 밑줄을 없애줍니다.
-                        border: "1px solid black", // 버튼의 테두리를 검정색으로 설정합니다.
+                        textDecoration: "none",
+                        border: "1px solid black",
                       }}
+                      onClick={handleButtonClick} // 버튼 클릭 핸들러 연결
                     >
-                      <Link
-                        to="/nonamed"
-                        target="_blank"
-                        style={{ color: "black", textDecoration: "none" }}
-                      >
-                        New
-                      </Link>
+                      New
                     </Button>
                     <Button
                       variant="outlined"
