@@ -18,7 +18,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import { Link } from "react-router-dom";
-import NotebookMenuBar from "./NotebookMenuBar";
+import NotebookMenuBar from "../components/NotebookMenuBar";
 import HistoryPage from "./HistoryPage";
 
 const RushHome = () => {

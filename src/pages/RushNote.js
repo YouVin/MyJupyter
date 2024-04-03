@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import NotebookMenuBar from "./NotebookMenuBar";
-import MenuItemComponent from "./MenuItemComponent";
-import TextList from "./TextList";
+import NotebookMenuBar from "../components/NotebookMenuBar";
+import MenuItemComponent from "../components/MenuItemComponent";
+import TextList from "../components/TextList";
 import { Container } from "@mui/material";
-import "./App.css";
 import { marked } from "marked";
 
 function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {

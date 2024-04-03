@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RushHome from "./RushHome";
 import RushNote from "./RushNote";
-import TopBar from "./TopBar";
+import TopBar from "../components/TopBar";
 import { AppBar, Container } from "@mui/material";
 
 function App() {
