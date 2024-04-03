@@ -2,8 +2,15 @@ import React, { useState } from "react";
 import NotebookMenuBar from "../components/NotebookMenuBar";
 import MenuItemComponent from "../components/MenuItemComponent";
 import TextList from "../components/TextList";
-import { Container } from "@mui/material";
+import {
+  Container,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  IconButton,
+} from "@mui/material";
 import { marked } from "marked";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
   const [cellItems, setCellItems] = useState([
@@ -196,6 +203,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
       },
     ]);
   };
+
   // 파일 저장 함수
   const handleSaveClick = () => {
     const now = new Date();
@@ -364,17 +372,31 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
       </div>
       <div>
         {cellItems.map((item) => (
-          <TextList
+          <Accordion
             key={item.id}
-            id={item.id}
-            setMarkdownResult={setMarkdownResult}
-            isActive={selectedCellId === item.id} // 현재 셀이 활성화된 상태인지 확인
-            onCodeChange={handleCodeChange} // 코드 작성 내용을 업데이트
-            markdownResult={item.markdownResult}
-            selectedLanguage={item.selectedLanguage}
-            onSelect={() => handleCellSelect(item.id)} //셀 선택 및 해제
-            cellItems={cellItems} //전체 셀 목록
-          />
+            expanded={selectedCellId === item.id}
+            onChange={() => setSelectedCellId(item.id)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${item.id}-content`}
+              id={`panel${item.id}-header`}
+            >
+              {/* 요약 부분에는 화살표 아이콘만 남겨둘 수 있습니다. */}
+            </AccordionSummary>
+            <AccordionDetails>
+              <TextList
+                id={item.id}
+                setMarkdownResult={setMarkdownResult}
+                isActive={selectedCellId === item.id}
+                onCodeChange={handleCodeChange}
+                markdownResult={item.markdownResult}
+                selectedLanguage={item.selectedLanguage}
+                onSelect={() => setSelectedCellId(item.id)}
+                cellItems={cellItems}
+              />
+            </AccordionDetails>
+          </Accordion>
         ))}
       </div>
     </Container>

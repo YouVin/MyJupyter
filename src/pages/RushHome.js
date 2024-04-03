@@ -18,7 +18,12 @@ import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import NotebookMenuBar from "../components/NotebookMenuBar";
+import PdfIcon from "@mui/icons-material/PictureAsPdf";
+import ImageIcon from "@mui/icons-material/Image";
+import SmartDisplayIcon from "@mui/icons-material/SmartDisplay";
 import HistoryPage from "./HistoryPage";
+import HtmlIcon from "@mui/icons-material/Html";
+import ArticleIcon from "@mui/icons-material/Article";
 
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
@@ -52,11 +57,39 @@ const RushHome = () => {
     }
   };
 
+  const getFileIcon = (fileType) => {
+    if (fileType && fileType.startsWith("image/")) {
+      return <ImageIcon />;
+    } else if (
+      fileType &&
+      fileType.startsWith("application/x-zip-compressed")
+    ) {
+      return <FolderIcon />;
+    } else if (fileType && fileType.startsWith("application/pdf")) {
+      return <PdfIcon />;
+    } else if (fileType && fileType.startsWith("video/mp4")) {
+      return <SmartDisplayIcon />;
+    } else if (fileType && fileType.startsWith("text/html")) {
+      return <HtmlIcon />;
+    } else if (fileType && fileType.startsWith("text/")) {
+      return <ArticleIcon />;
+    }
+  };
+
   const createNewFile = () => {
     window.open("/nonamed", "_blank"); // 새 창으로 열기
     const currentFolderPath = folderPath;
     const newFileName = "nonamed.irn";
     const newFilePath = currentFolderPath + "/" + newFileName;
+  };
+
+  //파일 사이즈 정리
+  const formatFileSize = (bytes) => {
+    if (bytes < 1000) {
+      return bytes + " B";
+    } else {
+      return (bytes / 1000).toFixed(1) + " KB";
+    }
   };
 
   const handleButtonClick = () => {
@@ -210,7 +243,11 @@ const RushHome = () => {
                 }}
               >
                 <TableContainer component={Paper}>
-                  <Table aria-label="file table" size="small">
+                  <Table
+                    aria-label="file table"
+                    size="small"
+                    style={{ width: "100%" }}
+                  >
                     <TableHead>
                       <TableRow>
                         <TableCell
@@ -273,18 +310,34 @@ const RushHome = () => {
             )}
           </div>
           {value === 0 && (
-            <div style={{ maxHeight: "65vh", overflowY: "auto" }}>
+            <div
+              style={{ maxHeight: "65vh", overflowY: "auto", width: "100%" }}
+            >
               <TableContainer component={Paper}>
-                <Table aria-label="file table">
+                <Table aria-label="file table" size="small">
                   <TableBody>
                     {fileList.map((file, index) => (
                       <TableRow key={index}>
-                        <TableCell>{file.name}</TableCell>
-                        <TableCell>
+                        <TableCell
+                          style={{ whiteSpace: "nowrap", fontSize: 12 }}
+                        >
+                          {getFileIcon(file.type)} {file.name}
+                        </TableCell>
+                        <TableCell
+                          style={{ whiteSpace: "nowrap", fontSize: 12 }}
+                        >
                           {file.lastModifiedDate.toLocaleString()}
                         </TableCell>
-                        <TableCell>{file.type}</TableCell>
-                        <TableCell>{file.size} bytes</TableCell>
+                        <TableCell
+                          style={{ whiteSpace: "nowrap", fontSize: 12 }}
+                        >
+                          {file.type}
+                        </TableCell>
+                        <TableCell
+                          style={{ whiteSpace: "nowrap", fontSize: 12 }}
+                        >
+                          {formatFileSize(file.size)}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
