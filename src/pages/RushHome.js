@@ -53,13 +53,14 @@ const RushHome = () => {
   };
 
   const createNewFile = () => {
+    window.open("/nonamed", "_blank"); // 새 창으로 열기
     const currentFolderPath = folderPath;
     const newFileName = "nonamed.irn";
     const newFilePath = currentFolderPath + "/" + newFileName;
   };
 
   const handleButtonClick = () => {
-    window.open("/nonamed", "_blank"); // 새 창으로 열기
+    fileInputRef.current.click();
   };
 
   return (
@@ -153,7 +154,7 @@ const RushHome = () => {
                         textDecoration: "none",
                         border: "1px solid black",
                       }}
-                      onClick={handleButtonClick} // 버튼 클릭 핸들러 연결
+                      onClick={createNewFile} // 버튼 클릭 핸들러 연결
                     >
                       New
                     </Button>
