@@ -4,13 +4,9 @@ import {
   List,
   ListItem,
   ListItemText,
-  Avatar,
   Typography,
   Divider,
 } from "@mui/material";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
-
 const HistoryPage = () => {
   const [savedHistory, setSavedHistory] = useState([]);
   const [unsavedHistory, setUnsavedHistory] = useState([]);
@@ -98,48 +94,6 @@ const HistoryPage = () => {
                   item.cellItems ? item.cellItems.length : 0
                 } cellItems • ${formatTimeAgo(item.saveTime)}`}
               />
-              <Avatar>
-                {item.isActive ? (
-                  <FiberManualRecordIcon sx={{ color: "green" }} />
-                ) : (
-                  <FiberManualRecordOutlinedIcon />
-                )}
-              </Avatar>
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-
-      <Typography variant="h5" gutterBottom sx={{ marginTop: 3 }}>
-        Unsaved History
-      </Typography>
-      <Divider sx={{ backgroundColor: "rgba(0, 0, 51, 1)", marginTop: 3 }} />
-      <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 3 }}>
-        <List component="div">
-          {unsavedHistory.map((item, index) => (
-            <ListItem
-              key={index}
-              sx={{
-                border: "1px solid rgba(0, 0, 51, 0.3)",
-                borderRadius: 1,
-                borderTop:
-                  index === 0 ? "1px solid rgba(0, 0, 51, 0.3)" : "none",
-                borderBottom: "1px solid rgba(0, 0, 51, 0.3)",
-              }}
-            >
-              <ListItemText
-                primary={`Update ${item.key}`}
-                secondary={`create ${
-                  item.cellItems ? item.cellItems.length : 1
-                } cellItems • no save time`}
-              />
-              <Avatar>
-                {item.isActive ? (
-                  <FiberManualRecordIcon sx={{ color: "green" }} />
-                ) : (
-                  <FiberManualRecordOutlinedIcon />
-                )}
-              </Avatar>
             </ListItem>
           ))}
         </List>

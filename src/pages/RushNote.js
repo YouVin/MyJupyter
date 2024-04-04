@@ -382,7 +382,6 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
             >
-              {/* 요약 부분에는 화살표 아이콘만 남겨둘 수 있습니다. */}
             </AccordionSummary>
             <AccordionDetails>
               <TextList
