@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import StopCircleIcon from "@mui/icons-material/StopCircle";
 import NotebookMenuBar from "../components/NotebookMenuBar";
 import PdfIcon from "@mui/icons-material/PictureAsPdf";
 import ImageIcon from "@mui/icons-material/Image";
@@ -24,6 +23,7 @@ import SmartDisplayIcon from "@mui/icons-material/SmartDisplay";
 import HistoryPage from "./HistoryPage";
 import HtmlIcon from "@mui/icons-material/Html";
 import ArticleIcon from "@mui/icons-material/Article";
+import HistoryIcon from "@mui/icons-material/History";
 
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
@@ -145,7 +145,7 @@ const RushHome = () => {
                 label="Files"
               />
               <Tab
-                icon={<StopCircleIcon sx={{ fontSize: 20 }} />}
+                icon={<HistoryIcon sx={{ fontSize: 20 }} />}
                 iconPosition="start"
                 disableRipple
                 sx={{
@@ -155,7 +155,7 @@ const RushHome = () => {
                   color: "black",
                   borderRight: "1px solid",
                 }}
-                label="Run"
+                label="History"
               />
             </Tabs>
             {value === 0 && (
@@ -174,7 +174,7 @@ const RushHome = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Typography variant="body1">
+                  <Typography variant="body1" style={{ whiteSpace: "nowrap" }}>
                     Select items to perform actions on them.
                   </Typography>
                   <div style={{ display: "flex", gap: "10px" }}>

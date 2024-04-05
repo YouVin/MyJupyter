@@ -207,6 +207,8 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
   // 파일 저장 함수
   const handleSaveClick = () => {
     const now = new Date();
+    const cellItemCount = cellItems.length;
+
     console.log(currentTitle);
     if (currentTitle) {
       // 현재 상태를 JSON으로 변환하여 저장합니다.
@@ -218,6 +220,23 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
 
       setSaveTime(getRelativeTime(now));
       setSaveData(getRelativeTime(now)); // savetime을 저장 데이터로 업데이트
+
+      // 기록 남기기
+      const historyItem = {
+        title: currentTitle,
+        cellItemCount: cellItemCount,
+        saveTime: now,
+      };
+
+      // 기존에 저장된 히스토리 내용 가져오기
+      const savedHistory =
+        JSON.parse(localStorage.getItem("savedHistory")) || [];
+
+      // 새로운 기록 추가
+      savedHistory.push(historyItem);
+
+      // 로컬 스토리지에 저장
+      localStorage.setItem("savedHistory", JSON.stringify(savedHistory));
     }
   };
   //파일 불러오기
@@ -381,8 +400,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
-            >
-            </AccordionSummary>
+            ></AccordionSummary>
             <AccordionDetails>
               <TextList
                 id={item.id}
