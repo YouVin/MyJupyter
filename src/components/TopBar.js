@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Toolbar, Typography, Input, Button, Divider } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 function TopBar({ onTitleChange, savetime, setSaveTime }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [title, setTitle] = useState("Nonamed");
+  const [title, setTitle] = useState(
+    localStorage.getItem("title") || "nonamed"
+  );
+  const { title: routeTitle } = useParams();
+
+  useEffect(() => {
+    setTitle(routeTitle || title);
+  }, [routeTitle, title]);
 
   const handleEditTitle = () => {
     setIsEditingTitle(true);
@@ -14,11 +22,24 @@ function TopBar({ onTitleChange, savetime, setSaveTime }) {
   };
 
   const handleConfirmTitle = () => {
-    setIsEditingTitle(false);
     onTitleChange(title);
     setSaveTime(null);
-    console.log(title);
+    setIsEditingTitle(false);
+    window.location.pathname = `/rushnote/${title}`;
+    localStorage.setItem("title", title);
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("title");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div>
@@ -31,14 +52,14 @@ function TopBar({ onTitleChange, savetime, setSaveTime }) {
             height: "auto",
           }}
         />
-        {window.location.pathname === "/nonamed" && (
+        {window.location.pathname !== "/rushhome" && (
           <>
             {isEditingTitle ? (
               <Input
                 type="text"
                 value={title}
-                onChange={handleTitleChange}
                 autoFocus
+                onChange={handleTitleChange}
                 style={{
                   marginLeft: "20px",
                   color: "black",

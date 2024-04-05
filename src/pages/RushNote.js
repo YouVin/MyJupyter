@@ -239,9 +239,11 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
       localStorage.setItem("savedHistory", JSON.stringify(savedHistory));
     }
   };
+
   //파일 불러오기
   const handleLoadClick = () => {
     const fileId = currentTitle; // 불러올 파일의 ID 설정
+    console.log(currentTitle);
 
     // 로컬 스토리지에서 데이터 불러오기
     const savedData = localStorage.getItem(`${fileId}`);

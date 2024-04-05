@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import RushHome from "./RushHome";
 import RushNote from "./RushNote";
 import TopBar from "../components/TopBar";
@@ -38,9 +38,10 @@ function App() {
         </AppBar>
 
         <Routes>
-          <Route path="/" element={<RushHome />} />
+          <Route path="/" element={<Navigate to="/rushhome" />} />
+          <Route path="/rushhome" element={<RushHome />} />
           <Route
-            path={"/nonamed"}
+            path={"/rushnote/:title"}
             element={
               <RushNote currentTitle={currentTitle} setSaveData={setSaveTime} />
             }

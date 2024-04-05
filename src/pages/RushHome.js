@@ -77,7 +77,7 @@ const RushHome = () => {
   };
 
   const createNewFile = () => {
-    window.open("/nonamed", "_blank"); // 새 창으로 열기
+    window.open("/rushnote/nonamed", "_blank"); // 새 창으로 열기
     const currentFolderPath = folderPath;
     const newFileName = "nonamed.irn";
     const newFilePath = currentFolderPath + "/" + newFileName;
