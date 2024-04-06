@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Toolbar, Typography, Input, Button, Divider } from "@mui/material";
 import { useParams } from "react-router-dom";
 
-function TopBar({ onTitleChange, savetime, setSaveTime }) {
+function TopBar({ savetime, setSaveTime }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState(
     localStorage.getItem("title") || "nonamed"
@@ -22,7 +22,6 @@ function TopBar({ onTitleChange, savetime, setSaveTime }) {
   };
 
   const handleConfirmTitle = () => {
-    onTitleChange(title);
     setSaveTime(null);
     setIsEditingTitle(false);
     window.location.pathname = `/rushnote/${title}`;

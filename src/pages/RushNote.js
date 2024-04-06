@@ -7,18 +7,16 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  IconButton,
 } from "@mui/material";
 import { marked } from "marked";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
+function RushNote({ setSaveData }) {
   const [cellItems, setCellItems] = useState([
     { id: 1, inputText: "", markdownResult: "", selectedLanguage: "markdown" },
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
-  const [title, setTitle] = useState("Nonamed"); // 타이틀 상태
   const [savetime, setSaveTime] = useState("");
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
 
@@ -208,6 +206,7 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
   const handleSaveClick = () => {
     const now = new Date();
     const cellItemCount = cellItems.length;
+    const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
 
     console.log(currentTitle);
     if (currentTitle) {
@@ -242,8 +241,8 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
 
   //파일 불러오기
   const handleLoadClick = () => {
-    const fileId = currentTitle; // 불러올 파일의 ID 설정
-    console.log(currentTitle);
+    const fileId = localStorage.getItem("title"); // 불러올 파일의 ID 설정
+    console.log(fileId);
 
     // 로컬 스토리지에서 데이터 불러오기
     const savedData = localStorage.getItem(`${fileId}`);
@@ -298,14 +297,9 @@ function RushNote({ rushNoteState, currentTitle, onTitleChange, setSaveData }) {
     setCellItems(updatedCells);
   };
 
-  // TopBar 컴포넌트에서 타이틀 변경 시 호출될 함수
-  const handleTitleChange = (newTitle) => {
-    setTitle(newTitle); // 타이틀 상태 변경
-    onTitleChange(newTitle); // 부모 컴포넌트로 변경된 타이틀 전달
-  };
-
   // 파일 다운로드 함수
   const handleDownloadClick = () => {
+    const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
     const filename = `${currentTitle}.irn`; // 파일명 설정
 
     // 파일 내용을 JSON 형태로 변환

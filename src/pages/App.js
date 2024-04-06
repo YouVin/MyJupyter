@@ -6,7 +6,6 @@ import TopBar from "../components/TopBar";
 import { AppBar, Container } from "@mui/material";
 
 function App() {
-  const [currentTitle, setCurrentTitle] = useState("Nonamed");
   const [lastExecutionTime, setLastExecutionTime] = useState(null);
   const [savetime, setSaveTime] = useState(""); // savetime 상태 추가
 
@@ -26,11 +25,7 @@ function App() {
             boxShadow: "none",
           }}
         >
-          {/* TopBar에 savetime 전달 */}
-
           <TopBar
-            defaultTitle={currentTitle}
-            onTitleChange={setCurrentTitle}
             handleSetTimeData={handleSetTimeData}
             savetime={savetime} // savetime 전달
             setSaveTime={setSaveTime}
@@ -42,9 +37,7 @@ function App() {
           <Route path="/rushhome" element={<RushHome />} />
           <Route
             path={"/rushnote/:title"}
-            element={
-              <RushNote currentTitle={currentTitle} setSaveData={setSaveTime} />
-            }
+            element={<RushNote setSaveData={setSaveTime} />}
           />
         </Routes>
       </Container>

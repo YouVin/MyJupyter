@@ -78,39 +78,41 @@ const HistoryPage = () => {
       </Typography>
       <Divider sx={{ backgroundColor: "rgba(0, 0, 51, 1)", marginTop: 3 }} />
       <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 3 }}>
-        {Object.entries(groupedHistory).map(([date, historyItems]) => (
-          <div key={date}>
-            <Typography variant="subtitle1" style={{ marginTop: 10 }}>
-              {date}
-            </Typography>
-            <List component="div">
-              {historyItems
-                .slice()
-                .reverse()
-                .map((item, index) => (
-                  <ListItem
-                    key={index}
-                    sx={{
-                      border: "1px solid rgba(0, 0, 51, 0.3)",
-                      borderRadius: 1,
-                      borderTop: "1px solid rgba(0, 0, 51, 0.3)",
-                      borderBottom:
-                        index === historyItems.length - 1
-                          ? "1px solid rgba(0, 0, 51, 0.3)"
-                          : "none",
-                    }}
-                  >
-                    <ListItemText
-                      primary={`Update ${item.title}`}
-                      secondary={`create ${
-                        item.cellItemCount ? item.cellItemCount : 0
-                      } cellItems •  ${formatTimeAgo(item.saveTime)}`}
-                    />
-                  </ListItem>
-                ))}
-            </List>
-          </div>
-        ))}
+        {Object.entries(groupedHistory)
+          .reverse()
+          .map(([date, historyItems]) => (
+            <div key={date}>
+              <Typography variant="subtitle1" style={{ marginTop: 10 }}>
+                {date}
+              </Typography>
+              <List component="div">
+                {historyItems
+                  .slice()
+                  .reverse()
+                  .map((item, index) => (
+                    <ListItem
+                      key={index}
+                      sx={{
+                        border: "1px solid rgba(0, 0, 51, 0.3)",
+                        borderRadius: 1,
+                        borderTop: "1px solid rgba(0, 0, 51, 0.3)",
+                        borderBottom:
+                          index === historyItems.length - 1
+                            ? "1px solid rgba(0, 0, 51, 0.3)"
+                            : "none",
+                      }}
+                    >
+                      <ListItemText
+                        primary={`Update ${item.title}`}
+                        secondary={`create ${
+                          item.cellItemCount ? item.cellItemCount : 0
+                        } cellItems •  ${formatTimeAgo(item.saveTime)}`}
+                      />
+                    </ListItem>
+                  ))}
+              </List>
+            </div>
+          ))}
       </Paper>
     </div>
   );
