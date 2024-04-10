@@ -74,11 +74,15 @@ const HistoryPage = () => {
     return `${years} years ago`;
   };
 
-  const handleDeleteItem = (index) => {
-    const updatedHistory = [...savedHistory];
-    updatedHistory.splice(index, 1);
-    localStorage.setItem("savedHistory", JSON.stringify(updatedHistory));
-    setSavedHistory(updatedHistory);
+  const handleDeleteItem = (date, index) => {
+    const updatedHistory = { ...groupedHistory };
+    updatedHistory[date] = [...updatedHistory[date]];
+    updatedHistory[date].splice(index, 1);
+    localStorage.setItem(
+      "savedHistory",
+      JSON.stringify(Object.values(updatedHistory).flat())
+    );
+    setGroupedHistory(updatedHistory);
   };
 
   return (
@@ -88,45 +92,54 @@ const HistoryPage = () => {
       </Typography>
       <Divider sx={{ backgroundColor: "rgba(0, 0, 51, 1)", marginTop: 2 }} />
       <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 5 }}>
-        {Object.entries(groupedHistory).map(([date, historyItems]) => (
-          <div key={date} style={{ marginTop: 10 }}>
-            <Typography variant="button" style={{ fontSize: 15 }}>
-              <CalendarViewDayIcon style={{ marginRight: 15 }} />
-              {date}
-            </Typography>
-            <List component="div">
-              {historyItems.map((item, index) => (
-                <ListItem
-                  key={index}
-                  sx={{
-                    border: "1px solid rgba(0, 0, 51, 0.3)",
-                    borderRadius: 1,
-                    borderTop: "1px solid rgba(0, 0, 51, 0.3)",
-                    borderBottom:
-                      index === historyItems.length - 1
-                        ? "1px solid rgba(0, 0, 51, 0.3)"
-                        : "none",
-                  }}
-                >
-                  <ListItemText
-                    primary={`[UPDATE] • ${item.title}`}
-                    primaryTypographyProps={{
-                      fontSize: 16,
-                      fontWeight: "medium",
-                      letterSpacing: 0,
-                    }}
-                    secondary={`create ${
-                      item.cellItemCount ? item.cellItemCount : 0
-                    } cellItems •  ${formatTimeAgo(item.saveTime)}`}
-                  />
-                  <IconButton onClick={() => handleDeleteItem(index)}>
-                    <ClearIcon />
-                  </IconButton>
-                </ListItem>
-              ))}
-            </List>
-          </div>
-        ))}
+        {Object.entries(groupedHistory)
+          .sort(([dateA], [dateB]) => new Date(dateB) - new Date(dateA))
+          .map(([date, historyItems]) => {
+            // 시간에 따라 정렬
+            historyItems.sort(
+              (a, b) => new Date(b.saveTime) - new Date(a.saveTime)
+            );
+
+            return (
+              <div key={date} style={{ marginTop: 10 }}>
+                <Typography variant="button" style={{ fontSize: 15 }}>
+                  <CalendarViewDayIcon style={{ marginRight: 15 }} />
+                  {date}
+                </Typography>
+                <List component="div">
+                  {historyItems.map((item, index) => (
+                    <ListItem
+                      key={index}
+                      sx={{
+                        border: "1px solid rgba(0, 0, 51, 0.3)",
+                        borderRadius: 1,
+                        borderTop: "1px solid rgba(0, 0, 51, 0.3)",
+                        borderBottom:
+                          index === historyItems.length - 1
+                            ? "1px solid rgba(0, 0, 51, 0.3)"
+                            : "none",
+                      }}
+                    >
+                      <ListItemText
+                        primary={`[UPDATE] • ${item.title}`}
+                        primaryTypographyProps={{
+                          fontSize: 16,
+                          fontWeight: "medium",
+                          letterSpacing: 0,
+                        }}
+                        secondary={`create ${
+                          item.cellItemCount ? item.cellItemCount : 0
+                        } cellItems •  ${formatTimeAgo(item.saveTime)}`}
+                      />
+                      <IconButton onClick={() => handleDeleteItem(date, index)}>
+                        <ClearIcon />
+                      </IconButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </div>
+            );
+          })}
       </Paper>
     </div>
   );

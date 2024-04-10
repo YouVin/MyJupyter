@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NotebookMenuBar from "../components/NotebookMenuBar";
 import MenuItemComponent from "../components/MenuItemComponent";
 import TextList from "../components/TextList";
@@ -13,12 +13,34 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 function RushNote({ setSaveData }) {
   const [cellItems, setCellItems] = useState([
-    { id: 1, inputText: "", markdownResult: "", selectedLanguage: "markdown" },
+    {
+      id: 1,
+      inputText: "",
+      markdownResult: "",
+      selectedLanguage: "markdown",
+    },
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
   const [savetime, setSaveTime] = useState("");
+  const [accordionsExpanded, setAccordionsExpanded] = useState({}); // 아코디언 아이템의 확장 상태를 관리하는 상태 변수
+
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
+
+  useEffect(() => {
+    const storedFileContent = localStorage.getItem("openfile");
+    if (storedFileContent) {
+      // JSON 형태의 데이터를 파싱하여 가져옴
+      const parsedData = JSON.parse(storedFileContent);
+      // 가져온 데이터를 cellItems에 설정
+      setCellItems(parsedData.cellItems);
+      // 마지막으로 저장된 시간을 가져와서 savetime 업데이트
+      const savedTime = new Date(parsedData.saveTime);
+      setSaveTime(getRelativeTime(savedTime));
+      setSaveData(getRelativeTime(savedTime)); // 불러올 때도 savetime을 업데이트
+    }
+    localStorage.removeItem("openfile");
+  }, []);
 
   // 시간 변환 함수
   const getRelativeTime = (dateTime) => {
@@ -213,6 +235,7 @@ function RushNote({ setSaveData }) {
       // 현재 상태를 JSON으로 변환하여 저장합니다.
       const jsonState = JSON.stringify({
         cellItems: cellItems,
+        title: localStorage.getItem("title"),
         saveTime: now, // 현재 시간을 저장합니다.
       });
       localStorage.setItem(`${currentTitle}`, jsonState);
@@ -281,10 +304,15 @@ function RushNote({ setSaveData }) {
     });
   };
 
-  //셀 선택 함수
+  // 셀 선택 함수
   const handleCellSelect = (id) => {
     setSelectedCellId(id);
-    console.log(id);
+
+    // 아코디언 아이템의 확장 상태를 토글합니다.
+    setAccordionsExpanded((prevExpanded) => ({
+      ...prevExpanded,
+      [id]: !prevExpanded[id],
+    }));
   };
 
   // 셀 삭제 로직
@@ -302,8 +330,7 @@ function RushNote({ setSaveData }) {
     const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
     const filename = `${currentTitle}.irn`; // 파일명 설정
 
-    // 파일 내용을 JSON 형태로 변환
-    const fileContent = JSON.stringify(cellItems);
+    const fileContent = localStorage.getItem(currentTitle); // 현재 title을 키로 사용하여 해당 값을 가져옴
 
     // Blob 객체 생성
     const blob = new Blob([fileContent], { type: "application/json" });
@@ -389,14 +416,16 @@ function RushNote({ setSaveData }) {
         {cellItems.map((item) => (
           <Accordion
             key={item.id}
-            expanded={selectedCellId === item.id}
-            onChange={() => setSelectedCellId(item.id)}
+            expanded={accordionsExpanded[item.id]} // 해당 아코디언 아이템의 확장 상태를 상태 변수에 맞게 설정합니다.
+            onChange={() => handleCellSelect(item.id)}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
-            ></AccordionSummary>
+            >
+              {item.id}
+            </AccordionSummary>
             <AccordionDetails>
               <TextList
                 id={item.id}

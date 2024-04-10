@@ -14,6 +14,7 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
+import RushNote from "./RushNote";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import NotebookMenuBar from "../components/NotebookMenuBar";
@@ -28,8 +29,11 @@ import HistoryIcon from "@mui/icons-material/History";
 const RushHome = () => {
   const [folderPath, setFolderPath] = useState("");
   const [fileList, setFileList] = useState([]);
-  const fileInputRef = useRef(null);
   const [value, setValue] = React.useState(0); //tabs
+  // Upload 버튼에 대한 input 요소의 ref
+  const folderInputRef = useRef(null);
+  // Open 버튼에 대한 input 요소의 ref
+  const fileInputRef = useRef(null);
 
   const handleChange = (event, newValue) => {
     //tabs value change
@@ -53,7 +57,6 @@ const RushHome = () => {
       });
 
       setFileList(filteredFiles);
-      console.log(folderp);
     }
   };
 
@@ -92,8 +95,31 @@ const RushHome = () => {
     }
   };
 
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
+  const handleFolderButtonClick = () => {
+    folderInputRef.current.click(); // 폴더를 열기 위해 Upload 버튼을 클릭할 때 실행되는 함수
+  };
+
+  const handleFileButtonClick = (event) => {
+    fileInputRef.current.click(); // 파일을 열기 위해 Open 버튼을 클릭할 때 실행되는 함수
+  };
+
+  const handleFileOpenClick = (event) => {
+    const selectedFile = event.target.files[0];
+    const fileExtension = selectedFile.name.split(".").pop(); // 파일의 확장자 추출
+    if (fileExtension !== "irn") {
+      // 선택한 파일의 확장자가 .irn이 아닌 경우
+      alert("올바른 파일 형식이 아닙니다. .irn 파일을 선택해주세요.");
+      return; // 함수 종료
+    }
+
+    const fileReader = new FileReader();
+    fileReader.onload = (event) => {
+      const fileContent = JSON.parse(event.target.result);
+      localStorage.setItem("openfile", JSON.stringify(fileContent)); // 파일 내용을 로컬 스토리지에 저장
+      const title = fileContent.title;
+      window.open(`/rushnote/${title}`, "_blank"); // RushNote를 새 창으로 열기
+    };
+    fileReader.readAsText(selectedFile);
   };
 
   return (
@@ -194,7 +220,7 @@ const RushHome = () => {
                     <Button
                       variant="outlined"
                       startIcon={<FolderOpenIcon />}
-                      onClick={handleButtonClick}
+                      onClick={handleFolderButtonClick}
                       style={{
                         padding: "7px",
                         fontSize: "10px",
@@ -207,11 +233,33 @@ const RushHome = () => {
                     <input
                       type="file"
                       id="folderInput"
-                      ref={fileInputRef}
+                      ref={folderInputRef}
                       accept=""
                       webkitdirectory="true"
                       directory="true"
                       onChange={handleFolderFile}
+                      style={{
+                        display: "none",
+                      }}
+                    />
+                    <Button
+                      variant="outlined"
+                      onClick={handleFileButtonClick}
+                      style={{
+                        padding: "8px",
+                        fontSize: "10px",
+                        color: "black",
+                        textDecoration: "none",
+                        border: "1px solid black",
+                      }}
+                    >
+                      Open
+                    </Button>
+                    <input
+                      type="file"
+                      id="folderInput"
+                      ref={fileInputRef}
+                      onChange={handleFileOpenClick} // 파일 선택 이벤트 핸들러 연결
                       style={{
                         display: "none",
                       }}
