@@ -424,7 +424,8 @@ function RushNote({ setSaveData }) {
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
             >
-              {item.id}
+              {item.selectedLanguage.charAt(0).toUpperCase()}{" "}
+              {/* 첫 글자 대문자로 변환 후 사용자 입력 제목 */}
             </AccordionSummary>
             <AccordionDetails>
               <TextList

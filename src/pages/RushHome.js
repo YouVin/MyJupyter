@@ -14,7 +14,6 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import RushNote from "./RushNote";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import NotebookMenuBar from "../components/NotebookMenuBar";
@@ -81,9 +80,6 @@ const RushHome = () => {
 
   const createNewFile = () => {
     window.open("/rushnote/nonamed", "_blank"); // 새 창으로 열기
-    const currentFolderPath = folderPath;
-    const newFileName = "nonamed.irn";
-    const newFilePath = currentFolderPath + "/" + newFileName;
   };
 
   //파일 사이즈 정리
