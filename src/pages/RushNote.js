@@ -11,6 +11,7 @@ import {
 import { marked } from "marked";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
 
 function RushNote({ setSaveData }) {
   const [cellItems, setCellItems] = useState([
@@ -19,12 +20,14 @@ function RushNote({ setSaveData }) {
       inputText: "",
       markdownResult: "",
       selectedLanguage: "markdown",
+      cellTitle: "",
     },
   ]);
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
   const [savetime, setSaveTime] = useState("");
   const [accordionsExpanded, setAccordionsExpanded] = useState({}); // 아코디언 아이템의 확장 상태를 관리하는 상태 변수
+  const [editingTitle, setEditingTitle] = useState(null); // 추가: 편집 중인 아이템 ID
 
   let pauseTimeout; // 중단 상태를 저장하는 상태 변수
 
@@ -222,6 +225,7 @@ function RushNote({ setSaveData }) {
         inputText: "",
         markdownResult: "",
         selectedLanguage: "markdown",
+        cellTitle: "",
       },
     ]);
   };
@@ -364,6 +368,20 @@ function RushNote({ setSaveData }) {
       return prevState;
     });
   };
+  // 제목 편집 함수
+  const handleTitleEdit = (id) => {
+    setEditingTitle(id); // 편집 중인 아이템 ID 설정
+  };
+
+  // 제목 저장 함수
+  const handleTitleSave = (id, newTitle) => {
+    setCellItems((prevState) =>
+      prevState.map((item) =>
+        item.id === id ? { ...item, cellTitle: newTitle } : item
+      )
+    );
+    setEditingTitle(null); // 편집 종료
+  };
 
   return (
     <Container maxWidth="lg">
@@ -422,18 +440,58 @@ function RushNote({ setSaveData }) {
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
             >
-              <div style={{ width: "95%", flexShrink: 0 }}>
-                {item.selectedLanguage.charAt(0).toUpperCase()}{" "}
-              </div>
-              <EditIcon
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // 클릭 이벤트 핸들러 작성
-                  console.log("click");
-                }}
-                sx={{ color: "gray" }}
-              ></EditIcon>
+              {editingTitle === item.id ? (
+                <div style={{ width: "95%", flexShrink: 0 }}>
+                  <input
+                    type="text"
+                    value={item.cellTitle}
+                    onChange={(e) => {
+                      const newTitle = e.target.value;
+                      setCellItems((prevState) =>
+                        prevState.map((prevItem) =>
+                          prevItem.id === item.id
+                            ? { ...prevItem, cellTitle: newTitle }
+                            : prevItem
+                        )
+                      );
+                    }}
+                    onBlur={() => handleTitleSave(item.id, item.cellTitle)} // 포커스를 잃으면 변경 사항 저장
+                    autoFocus // 자동으로 포커스
+                  />
+                </div>
+              ) : (
+                <div style={{ width: "95%", flexShrink: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: 40, fontWeight: 500 }}>
+                      {item.selectedLanguage.charAt(0).toUpperCase()}
+                    </span>
+                    <span style={{ fontWeight: 600 }}>
+                      {item.cellTitle || ""}
+                    </span>
+                  </div>
+                </div>
+              )}
+              {editingTitle === item.id ? (
+                <CheckIcon
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleTitleSave(item.id, item.cellTitle); // 편집 모드 종료
+                  }}
+                  sx={{ color: "gray" }}
+                />
+              ) : (
+                <EditIcon
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editingTitle === item.id
+                      ? setEditingTitle(null)
+                      : handleTitleEdit(item.id); // 편집 모드 전환
+                  }}
+                  sx={{ color: "gray" }}
+                />
+              )}
             </AccordionSummary>
+
             <AccordionDetails>
               <TextList
                 id={item.id}
