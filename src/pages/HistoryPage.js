@@ -7,6 +7,7 @@ import {
   Typography,
   Divider,
   IconButton,
+  Pagination,
 } from "@mui/material";
 import CalendarViewDayIcon from "@mui/icons-material/CalendarViewDay";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -14,6 +15,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 const HistoryPage = () => {
   const [savedHistory, setSavedHistory] = useState([]);
   const [groupedHistory, setGroupedHistory] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     // 저장된 히스토리 가져오기
@@ -33,6 +36,16 @@ const HistoryPage = () => {
     }, {});
     setGroupedHistory(grouped);
   }, [savedHistory]);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const paginateItems = (items) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return items.slice(startIndex, endIndex);
+  };
 
   const formatTimeAgo = (time) => {
     if (!time) {
@@ -85,6 +98,11 @@ const HistoryPage = () => {
     setGroupedHistory(updatedHistory);
   };
 
+  const allItems = Object.values(groupedHistory).reduce(
+    (acc, items) => acc.concat(items),
+    []
+  );
+
   return (
     <div>
       <Typography variant="h5" gutterBottom style={{ marginTop: 20 }}>
@@ -99,6 +117,7 @@ const HistoryPage = () => {
             historyItems.sort(
               (a, b) => new Date(b.saveTime) - new Date(a.saveTime)
             );
+            const paginatedItems = paginateItems(historyItems);
 
             return (
               <div key={date} style={{ marginTop: 10 }}>
@@ -107,7 +126,7 @@ const HistoryPage = () => {
                   {date}
                 </Typography>
                 <List component="div">
-                  {historyItems.map((item, index) => (
+                  {paginatedItems.map((item, index) => (
                     <ListItem
                       key={index}
                       sx={{
@@ -115,7 +134,7 @@ const HistoryPage = () => {
                         borderRadius: 1,
                         borderTop: "1px solid rgba(0, 0, 51, 0.3)",
                         borderBottom:
-                          index === historyItems.length - 1
+                          index === paginatedItems.length - 1
                             ? "1px solid rgba(0, 0, 51, 0.3)"
                             : "none",
                       }}
@@ -140,6 +159,12 @@ const HistoryPage = () => {
               </div>
             );
           })}
+        <Pagination
+          count={Math.ceil(allItems.length / itemsPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
+          style={{ marginTop: 10, display: "flex", justifyContent: "center" }}
+        />
       </Paper>
     </div>
   );

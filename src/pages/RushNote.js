@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { marked } from "marked";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import EditIcon from "@mui/icons-material/Edit";
 
 function RushNote({ setSaveData }) {
   const [cellItems, setCellItems] = useState([
@@ -151,6 +152,7 @@ function RushNote({ setSaveData }) {
       }
     }
   };
+
   // 셀 복사 함수
   const handleCopyCell = () => {
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
@@ -414,18 +416,23 @@ function RushNote({ setSaveData }) {
       </div>
       <div>
         {cellItems.map((item) => (
-          <Accordion
-            key={item.id}
-            expanded={accordionsExpanded[item.id]} // 해당 아코디언 아이템의 확장 상태를 상태 변수에 맞게 설정합니다.
-            onChange={() => handleCellSelect(item.id)}
-          >
+          <Accordion key={item.id} onChange={() => handleCellSelect(item.id)}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
             >
-              {item.selectedLanguage.charAt(0).toUpperCase()}{" "}
-              {/* 첫 글자 대문자로 변환 후 사용자 입력 제목 */}
+              <div style={{ width: "95%", flexShrink: 0 }}>
+                {item.selectedLanguage.charAt(0).toUpperCase()}{" "}
+              </div>
+              <EditIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // 클릭 이벤트 핸들러 작성
+                  console.log("click");
+                }}
+                sx={{ color: "gray" }}
+              ></EditIcon>
             </AccordionSummary>
             <AccordionDetails>
               <TextList
