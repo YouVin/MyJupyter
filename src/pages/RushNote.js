@@ -40,35 +40,11 @@ function RushNote({ setSaveData }) {
       setCellItems(parsedData.cellItems);
       // 마지막으로 저장된 시간을 가져와서 savetime 업데이트
       const savedTime = new Date(parsedData.saveTime);
-      setSaveTime(getRelativeTime(savedTime));
-      setSaveData(getRelativeTime(savedTime)); // 불러올 때도 savetime을 업데이트
+      setSaveTime(savedTime);
+      setSaveData(savedTime); // 불러올 때도 savetime을 업데이트
     }
     localStorage.removeItem("openfile");
   }, []);
-
-  // 시간 변환 함수
-  const getRelativeTime = (dateTime) => {
-    const diffInMs = new Date() - dateTime;
-    const diffInSeconds = Math.floor(diffInMs / 1000);
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
-
-    if (diffInDays === 0) {
-      if (diffInMinutes < 1) {
-        return `${diffInSeconds}초 전`;
-      }
-      if (diffInMinutes < 60) {
-        return `${diffInMinutes}분 전`;
-      } else if (diffInHours < 24) {
-        return `${diffInHours}시간 전`;
-      } else {
-        return "오늘";
-      }
-    } else {
-      return `${diffInDays}일 전`;
-    }
-  };
 
   //셀 변환 코드 실행 함수
   const handleConvertClick = (id) => {
@@ -246,8 +222,8 @@ function RushNote({ setSaveData }) {
       });
       localStorage.setItem(`${currentTitle}`, jsonState);
 
-      setSaveTime(getRelativeTime(now));
-      setSaveData(getRelativeTime(now)); // savetime을 저장 데이터로 업데이트
+      setSaveTime(now);
+      setSaveData(now); // savetime을 저장 데이터로 업데이트
 
       // 기록 남기기
       const historyItem = {
@@ -285,8 +261,8 @@ function RushNote({ setSaveData }) {
 
       // 마지막으로 저장된 시간을 가져와서 savetime 업데이트
       const savedTime = new Date(parsedData.saveTime);
-      setSaveTime(getRelativeTime(savedTime));
-      setSaveData(getRelativeTime(savedTime)); // 불러올 때도 savetime을 업데이트
+      setSaveTime(savedTime);
+      setSaveData(savedTime); // 불러올 때도 savetime을 업데이트
     } else {
       // 해당 파일이 없는 경우에 대한 처리
       console.error(`File with id ${fileId} not found.`);

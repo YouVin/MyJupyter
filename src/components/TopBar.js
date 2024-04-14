@@ -13,6 +13,18 @@ function TopBar({ savetime, setSaveTime }) {
     setTitle(routeTitle || title);
   }, [routeTitle, title]);
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("title");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   const handleEditTitle = () => {
     setIsEditingTitle(true);
   };
@@ -28,17 +40,32 @@ function TopBar({ savetime, setSaveTime }) {
     localStorage.setItem("title", title);
   };
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("title");
-    };
+  // 시간 변환 함수
+  const getRelativeTime = (dateTime) => {
+    const diffInMs = new Date() - dateTime;
+    const diffInSeconds = Math.floor(diffInMs / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+    if (diffInDays === 0) {
+      if (diffInSeconds < 2) {
+        return "now";
+      }
+      if (diffInMinutes < 1) {
+        return `${diffInSeconds}초 전`;
+      }
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes}분 전`;
+      } else if (diffInHours < 24) {
+        return `${diffInHours}시간 전`;
+      } else {
+        return "오늘";
+      }
+    } else {
+      return `${diffInDays}일 전`;
+    }
+  };
 
   return (
     <div>
@@ -90,7 +117,7 @@ function TopBar({ savetime, setSaveTime }) {
               }}
               variant="h6"
             >
-              Last: {savetime ? savetime : null}
+              Last : {savetime ? getRelativeTime(savetime) : null}
             </Typography>
             {isEditingTitle && (
               <Button
