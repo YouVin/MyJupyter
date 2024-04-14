@@ -15,6 +15,7 @@ function TextList({
   onCodeChange,
   markdownResult,
   selectedLanguage,
+  inputText,
 }) {
   const [newCodeItemText, setNewCodeItemText] = useState("");
 
@@ -77,7 +78,7 @@ function TextList({
                 multiline
                 variant="outlined"
                 label="Markdown Code"
-                value={newCodeItemText}
+                value={inputText}
                 onChange={handleTextFieldChange}
                 InputProps={{ style: inputStyle }}
               />
@@ -87,7 +88,7 @@ function TextList({
                 mode="javascript"
                 theme="xcode"
                 onChange={handleEditorChange}
-                value={newCodeItemText}
+                value={inputText}
                 fontSize={14}
                 showPrintMargin={true}
                 showGutter={true}
@@ -109,7 +110,7 @@ function TextList({
                 mode="html"
                 theme="xcode"
                 onChange={handleEditorChange}
-                value={newCodeItemText}
+                value={inputText}
                 fontSize={14}
                 showPrintMargin={true}
                 showGutter={true}

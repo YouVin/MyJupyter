@@ -128,6 +128,7 @@ const RushHome = () => {
       localStorage.setItem("openfile", JSON.stringify(fileContent)); // 파일 내용을 로컬 스토리지에 저장
       const title = fileContent.title;
       window.open(`/rushnote/${title}`, "_blank"); // RushNote를 새 창으로 열기
+      localStorage.setItem("title", title);
     };
     fileReader.readAsText(selectedFile);
   };
@@ -299,7 +300,7 @@ const RushHome = () => {
             >
               <TableContainer component={Paper}>
                 <Table aria-label="file table" size="small">
-                  <TableHead style={{ position: "sticky", top: 0, zIndex: 1 }}>
+                  <TableHead>
                     {data.map((item, index) => (
                       <TableRow key={index}>
                         {Object.values(item).map((value, innerIndex) => (

@@ -23,6 +23,7 @@ function RushNote({ setSaveData }) {
       cellTitle: "",
     },
   ]);
+
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
   const [savetime, setSaveTime] = useState("");
@@ -110,7 +111,6 @@ function RushNote({ setSaveData }) {
       try {
         const result = inputText; // HTML은 그대로 출력
         setMarkdownResult(result);
-
         // 셀 상태 업데이트 함수
         setCellItems((prevState) => {
           const updatedCellItems = prevState.map((cell) => {
@@ -211,7 +211,7 @@ function RushNote({ setSaveData }) {
     const now = new Date();
     const cellItemCount = cellItems.length;
     const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
-
+    console.log(cellItems);
     console.log(currentTitle);
     if (currentTitle) {
       // 현재 상태를 JSON으로 변환하여 저장합니다.
@@ -224,7 +224,7 @@ function RushNote({ setSaveData }) {
 
       setSaveTime(now);
       setSaveData(now); // savetime을 저장 데이터로 업데이트
-
+      console.log(markdownResult);
       // 기록 남기기
       const historyItem = {
         title: currentTitle,
@@ -471,10 +471,10 @@ function RushNote({ setSaveData }) {
             <AccordionDetails>
               <TextList
                 id={item.id}
-                setMarkdownResult={setMarkdownResult}
                 isActive={selectedCellId === item.id}
                 onCodeChange={handleCodeChange}
                 markdownResult={item.markdownResult}
+                inputText={item.inputText}
                 selectedLanguage={item.selectedLanguage}
                 onSelect={() => setSelectedCellId(item.id)}
                 cellItems={cellItems}
