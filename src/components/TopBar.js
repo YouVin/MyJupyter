@@ -132,14 +132,6 @@ function TopBar({ savetime, setSaveTime }) {
             </>
           )}
       </Toolbar>
-      <Divider
-        sx={{
-          backgroundColor: "black",
-          marginLeft: "25px",
-          marginRight: "25px",
-          marginTop: "5px",
-        }}
-      />
     </div>
   );
 }

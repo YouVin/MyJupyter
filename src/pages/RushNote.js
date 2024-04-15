@@ -7,11 +7,13 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  AppBar,
 } from "@mui/material";
 import { marked } from "marked";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
+import { useMediaQuery } from "@mui/material";
 
 function RushNote({ setSaveData }) {
   const [cellItems, setCellItems] = useState([
@@ -24,6 +26,7 @@ function RushNote({ setSaveData }) {
     },
   ]);
 
+  const isLargeScreen = useMediaQuery("(min-width:1100px)"); // 미디어 쿼리를 이용해 큰 화면인지 확인
   const [markdownResult, setMarkdownResult] = useState(""); // 마크다운으로 변환된 결과 상태
   const [selectedCellId, setSelectedCellId] = useState(null); // 선택된 셀의 ID를 관리
   const [savetime, setSaveTime] = useState("");
@@ -211,7 +214,6 @@ function RushNote({ setSaveData }) {
     const now = new Date();
     const cellItemCount = cellItems.length;
     const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
-    console.log(cellItems);
     console.log(currentTitle);
     if (currentTitle) {
       // 현재 상태를 JSON으로 변환하여 저장합니다.
@@ -224,7 +226,6 @@ function RushNote({ setSaveData }) {
 
       setSaveTime(now);
       setSaveData(now); // savetime을 저장 데이터로 업데이트
-      console.log(markdownResult);
       // 기록 남기기
       const historyItem = {
         title: currentTitle,
@@ -361,60 +362,73 @@ function RushNote({ setSaveData }) {
 
   return (
     <Container maxWidth="lg">
-      <div style={{ padding: "0px 10px", marginTop: "8px" }}>
-        <NotebookMenuBar
-          handleLoadClick={handleLoadClick}
-          handleDownloadClick={handleDownloadClick}
-          notebookType="RushNote"
-          handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
-          handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
-          deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
-          selectedCellId={selectedCellId}
-        />
-      </div>
-      <div style={{ padding: "0px 10px" }}>
-        <MenuItemComponent
-          addCell={addCellItem}
-          handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
-          handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
-          deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
-          handlePauseCell={handlePauseCell} // 셀 중단 함수 전달
-          handleRestartCell={handleRestartCell} // 셀 재시작 함수 전달
-          inputText={
-            cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
-            ""
-          }
-          setMarkdownResult={setMarkdownResult} // 초기화를 위한 결과창 함수 전달
-          selectedLanguage={
-            cellItems.find((cell) => cell.id === selectedCellId)
-              ?.selectedLanguage || "markdown"
-          }
-          setSelectedLanguage={(lang) => {
-            setCellItems((prevState) => {
-              const updatedCellItems = prevState.map((cell) => {
-                if (cell.id === selectedCellId) {
-                  return {
-                    ...cell,
-                    selectedLanguage: lang,
-                  };
-                }
-                return cell;
+      <AppBar
+        position="fixed"
+        style={{
+          marginTop: 62,
+          backgroundColor: "white",
+          padding: "0px 0px",
+          boxShadow: "none",
+          width: isLargeScreen ? "59%" : "94%", // 화면 크기에 따라 너비 조정
+          marginLeft: isLargeScreen ? "19%" : "4%", // 화면 크기에 따라 왼쪽 여백 조정
+          marginRight: isLargeScreen ? "20%" : "2%", // 화면 크기에 따라 오른쪽 여백 조정
+        }}
+      >
+        <div>
+          <NotebookMenuBar
+            handleLoadClick={handleLoadClick}
+            handleDownloadClick={handleDownloadClick}
+            handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
+            handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
+            deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
+            selectedCellId={selectedCellId}
+          />
+        </div>
+        <div>
+          <MenuItemComponent
+            addCell={addCellItem}
+            handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
+            handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
+            deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
+            handlePauseCell={handlePauseCell} // 셀 중단 함수 전달
+            handleRestartCell={handleRestartCell} // 셀 재시작 함수 전달
+            inputText={
+              cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
+              ""
+            }
+            setMarkdownResult={setMarkdownResult} // 초기화를 위한 결과창 함수 전달
+            selectedLanguage={
+              cellItems.find((cell) => cell.id === selectedCellId)
+                ?.selectedLanguage || "markdown"
+            }
+            setSelectedLanguage={(lang) => {
+              setCellItems((prevState) => {
+                const updatedCellItems = prevState.map((cell) => {
+                  if (cell.id === selectedCellId) {
+                    return {
+                      ...cell,
+                      selectedLanguage: lang,
+                    };
+                  }
+                  return cell;
+                });
+                return updatedCellItems;
               });
-              return updatedCellItems;
-            });
-          }}
-          selectedCellId={selectedCellId}
-          handleConvertClick={() => handleConvertClick(selectedCellId)}
-          handleSaveClick={handleSaveClick}
-        />
-      </div>
-      <div>
+            }}
+            selectedCellId={selectedCellId}
+            handleConvertClick={() => handleConvertClick(selectedCellId)}
+            handleSaveClick={handleSaveClick}
+          />
+        </div>
+      </AppBar>
+      <div style={{ marginTop: 180 }}>
         {cellItems.map((item) => (
           <Accordion key={item.id} onChange={() => handleCellSelect(item.id)}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${item.id}-content`}
               id={`panel${item.id}-header`}
+              style={{ padding: 0 }}
             >
               {editingTitle === item.id ? (
                 <div style={{ width: "95%", flexShrink: 0 }}>
@@ -438,7 +452,13 @@ function RushNote({ setSaveData }) {
               ) : (
                 <div style={{ width: "95%", flexShrink: 0 }}>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ marginRight: 40, fontWeight: 500 }}>
+                    <span
+                      style={{
+                        marginLeft: isLargeScreen ? 18 : 8,
+                        marginRight: 40,
+                        fontWeight: 500,
+                      }}
+                    >
                       {item.selectedLanguage.charAt(0).toUpperCase()}
                     </span>
                     <span style={{ fontWeight: 600 }}>

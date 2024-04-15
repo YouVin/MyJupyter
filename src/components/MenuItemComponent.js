@@ -30,7 +30,7 @@ function MenuItemComponent({
 
   return (
     <div>
-      <Toolbar>
+      <Toolbar style={{ padding: 12 }}>
         <IconButton
           size="small"
           variant="contained"

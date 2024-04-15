@@ -11,7 +11,6 @@ import {
 function NotebookMenuBar({
   handleLoadClick,
   handleDownloadClick,
-  notebookType,
   handleCopyCell,
   handlePasteCell,
   deleteCell,
@@ -19,16 +18,6 @@ function NotebookMenuBar({
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
-
-  const allMenuItems = {
-    File: ["New", "Open", "Save", "Download"],
-    Edit: ["Cut Cell", "Copy Cell", "Paste Cell", "Undo", "Redo"],
-    View: ["Zoom In", "Zoom Out", "Full Screen"],
-    Run: ["Run All", "Run Selected", "Stop"],
-    Kernel: ["Change Kernel", "Restart Kernel", "Shutdown Kernel"],
-    Settings: ["General Settings", "User Preferences"],
-    Help: ["Documentation", "About"],
-  };
 
   const disabledMenuItemsForRushHome = [
     "Save",
@@ -38,6 +27,39 @@ function NotebookMenuBar({
     "Paste Cell",
     "Zoom In",
   ]; // RushHome에서 비활성화 할 항목
+
+  const getMenuItemsForCurrentPath = () => {
+    const menuItems = getMenuItems(); // getMenuItems 호출
+    if (window.location.pathname === "/rushhome") {
+      return Object.keys(menuItems)
+        .filter((label) => !disabledMenuItemsForRushHome.includes(label))
+        .reduce((acc, label) => {
+          acc[label] = menuItems[label];
+          return acc;
+        }, {});
+    } else if (window.location.pathname.startsWith("/rushnote")) {
+      return menuItems;
+    }
+    return {};
+  };
+
+  const getMenuItems = () => {
+    if (window.location.pathname === "/rushhome") {
+      return {
+        File: ["New", "Open", "Save", "Download"],
+        Settings: ["General Settings", "User Preferences"],
+        Help: ["Documentation", "About"],
+      };
+    } else {
+      return {
+        File: ["New", "Open", "Save", "Download"],
+        Edit: ["Cut Cell", "Copy Cell", "Paste Cell", "Undo", "Redo"],
+        Run: ["Run Selected Cell"],
+        Settings: ["General Settings", "User Preferences"],
+        Help: ["Documentation", "About"],
+      };
+    }
+  };
 
   const handleButtonClick = (event, label) => {
     setAnchorLabel(label);
@@ -64,25 +86,13 @@ function NotebookMenuBar({
     setAnchorEl(null);
   };
 
-  const getMenuItems = () => {
-    if (anchorLabel && allMenuItems[anchorLabel]) {
-      return allMenuItems[anchorLabel];
-    }
-    return [];
-  };
-
   return (
     <div>
-      {Object.keys(allMenuItems).map((label, index) => (
+      {Object.keys(getMenuItemsForCurrentPath()).map((label, index) => (
         <Button
           key={index}
           variant="text"
           onMouseEnter={(e) => handleButtonClick(e, label)}
-          disabled={
-            !notebookType ||
-            (notebookType === "RushHome" &&
-              disabledMenuItemsForRushHome.includes(label))
-          }
           aria-haspopup="true"
           style={{ color: "#000000" }}
         >
@@ -106,17 +116,14 @@ function NotebookMenuBar({
       >
         <Paper>
           <List>
-            {getMenuItems().map((item, index) => (
+            {getMenuItemsForCurrentPath()[anchorLabel]?.map((item, index) => (
               <ListItemButton
                 key={index}
                 onClick={() => handleMenuItemClick(item)}
                 disabled={
-                  notebookType === "RushHome" &&
+                  window.location.pathname === "/rushhome" &&
                   disabledMenuItemsForRushHome.includes(item)
                 }
-                style={{
-                  backgroundColor: notebookType === "RushNote" ? "white" : "",
-                }}
               >
                 <Typography>{item}</Typography>
               </ListItemButton>

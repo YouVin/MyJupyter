@@ -13,6 +13,7 @@ import {
   Divider,
   Tab,
   Tabs,
+  AppBar,
 } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
@@ -26,8 +27,10 @@ import ArticleIcon from "@mui/icons-material/Article";
 import HistoryIcon from "@mui/icons-material/History";
 import PublishOutlinedIcon from "@mui/icons-material/PublishOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { useMediaQuery } from "@mui/material";
 
 const RushHome = () => {
+  const isLargeScreen = useMediaQuery("(min-width:1100px)"); // 미디어 쿼리를 이용해 큰 화면인지 확인
   const [folderPath, setFolderPath] = useState("");
   const [fileList, setFileList] = useState([]);
   const [value, setValue] = React.useState(0); //tabs
@@ -140,163 +143,182 @@ const RushHome = () => {
         flexDirection: "column",
       }}
     >
-      <div style={{ paddingLeft: "15px" }}>
-        <NotebookMenuBar notebookType="RushHome" />
-      </div>
-      <Divider
-        sx={{
-          backgroundColor: "black",
-          marginLeft: "25px",
-          marginRight: "25px",
+      <AppBar
+        position="fixed"
+        style={{
+          backgroundColor: "white",
+          color: "black",
+          marginTop: 63,
+          boxShadow: "none",
+          width: isLargeScreen ? "60%" : "93%", // 화면 크기에 따라 너비 조정
+          marginLeft: isLargeScreen ? "20%" : "4%", // 화면 크기에 따라 왼쪽 여백 조정
+          marginRight: isLargeScreen ? "20%" : "3%", // 화면 크기에 따라 오른쪽 여백 조정
         }}
-      ></Divider>
-      <Container style={{ flexGrow: 1, paddingTop: "20px" }}>
-        <div>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            textColor="inherit"
-            indicatorColor="inherit"
+      >
+        <div style={{ paddingLeft: "15px" }}>
+          <NotebookMenuBar />
+        </div>
+        <Divider
+          sx={{
+            backgroundColor: "black",
+            marginLeft: "25px",
+            marginRight: "25px",
+          }}
+        />
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          textColor="inherit"
+          indicatorColor="inherit"
+          sx={{
+            "& .MuiTabs-indicator": {
+              backgroundColor: "white",
+            },
+            marginLeft: "25px",
+            marginTop: "10px",
+            padding: 1,
+            alignItems: "center",
+            minHeight: 20,
+            height: 25,
+            minWidth: "auto",
+          }}
+        >
+          <Tab
+            icon={<FolderIcon sx={{ fontSize: 18 }} />}
+            iconPosition="start"
+            disableRipple
             sx={{
-              "& .MuiTabs-indicator": {
-                backgroundColor: "white",
-              },
-              padding: 0.5,
+              borderBottom: "none",
+              fontSize: 12,
+              fontWeight: "bold",
+              border: "1px solid",
+            }}
+            label="Files"
+          />
+          <Tab
+            icon={<HistoryIcon sx={{ fontSize: 20 }} />}
+            iconPosition="start"
+            disableRipple
+            sx={{
+              borderBottom: "none",
+              fontWeight: "bold",
+              fontSize: 12,
+              color: "black",
+              borderRight: "1px solid",
+            }}
+            label="History"
+          />
+        </Tabs>
+        {value === 0 && (
+          <div
+            style={{
+              paddingLeft: "5px",
+              marginTop: "15px",
               alignItems: "center",
-              minHeight: 20,
-              height: 25,
-              minWidth: "auto",
+              marginBottom: "15px",
+              marginLeft: "28px",
             }}
           >
-            <Tab
-              icon={<FolderIcon sx={{ fontSize: 18 }} />}
-              iconPosition="start"
-              disableRipple
-              sx={{
-                borderBottom: "none",
-                fontSize: 12,
-                fontWeight: "bold",
-                border: "1px solid",
-              }}
-              label="Files"
-            />
-            <Tab
-              icon={<HistoryIcon sx={{ fontSize: 20 }} />}
-              iconPosition="start"
-              disableRipple
-              sx={{
-                borderBottom: "none",
-                fontWeight: "bold",
-                fontSize: 12,
-                color: "black",
-                borderRight: "1px solid",
-              }}
-              label="History"
-            />
-          </Tabs>
-          {value === 0 && (
             <div
               style={{
-                paddingLeft: "5px",
-                marginTop: "15px",
+                display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "15px",
+                marginRight: 20,
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="body1" style={{ whiteSpace: "nowrap" }}>
-                  Select items to perform actions on them.
-                </Typography>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <Button
-                    startIcon={<AddOutlinedIcon />}
-                    variant="outlined"
-                    style={{
-                      padding: "8px",
-                      fontSize: "10px",
-                      color: "black",
-                      textDecoration: "none",
-                      border: "1px solid black",
-                    }}
-                    onClick={createNewFile} // 버튼 클릭 핸들러 연결
-                  >
-                    New
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<PublishOutlinedIcon />}
-                    onClick={handleFileButtonClick}
-                    style={{
-                      padding: "8px",
-                      fontSize: "10px",
-                      color: "black",
-                      textDecoration: "none",
-                      border: "1px solid black",
-                    }}
-                  >
-                    Open
-                  </Button>
-                  <input
-                    type="file"
-                    id="folderInput"
-                    ref={fileInputRef}
-                    onChange={handleFileOpenClick} // 파일 선택 이벤트 핸들러 연결
-                    style={{
-                      display: "none",
-                    }}
-                  />
-                  <Button
-                    variant="outlined"
-                    startIcon={<FolderOpenIcon />}
-                    onClick={handleFolderButtonClick}
-                    style={{
-                      padding: "7px",
-                      fontSize: "10px",
-                      color: "black",
-                      border: "1px solid black", // 버튼의 테두리를 검정색으로 설정합니다.
-                    }}
-                  >
-                    Upload
-                  </Button>
-                  <input
-                    type="file"
-                    id="folderInput"
-                    ref={folderInputRef}
-                    accept=""
-                    webkitdirectory="true"
-                    directory="true"
-                    onChange={handleFolderFile}
-                    style={{
-                      display: "none",
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                style={{
-                  marginTop: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: 14,
-                  color: "grey",
-                  gap: "5px",
-                }}
-              >
-                <FolderIcon style={{ fontSize: 15 }} />
-                <div>/</div>
-                <div>{folderPath}</div>
+              <Typography variant="body1" style={{ whiteSpace: "nowrap" }}>
+                Select items to perform actions on them.
+              </Typography>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Button
+                  startIcon={<AddOutlinedIcon />}
+                  variant="outlined"
+                  style={{
+                    padding: "8px",
+                    fontSize: "10px",
+                    color: "black",
+                    textDecoration: "none",
+                    border: "1px solid black",
+                  }}
+                  onClick={createNewFile} // 버튼 클릭 핸들러 연결
+                >
+                  New
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<PublishOutlinedIcon />}
+                  onClick={handleFileButtonClick}
+                  style={{
+                    padding: "8px",
+                    fontSize: "10px",
+                    color: "black",
+                    textDecoration: "none",
+                    border: "1px solid black",
+                  }}
+                >
+                  Open
+                </Button>
+                <input
+                  type="file"
+                  id="folderInput"
+                  ref={fileInputRef}
+                  onChange={handleFileOpenClick} // 파일 선택 이벤트 핸들러 연결
+                  style={{
+                    display: "none",
+                  }}
+                />
+                <Button
+                  variant="outlined"
+                  startIcon={<FolderOpenIcon />}
+                  onClick={handleFolderButtonClick}
+                  style={{
+                    padding: "7px",
+                    fontSize: "10px",
+                    color: "black",
+                    border: "1px solid black", // 버튼의 테두리를 검정색으로 합니다.
+                  }}
+                >
+                  Upload
+                </Button>
+                <input
+                  type="file"
+                  id="folderInput"
+                  ref={folderInputRef}
+                  accept=""
+                  webkitdirectory="true"
+                  directory="true"
+                  onChange={handleFolderFile}
+                  style={{
+                    display: "none",
+                  }}
+                />
               </div>
             </div>
-          )}
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                alignItems: "center",
+                fontSize: 14,
+                color: "grey",
+                gap: "5px",
+              }}
+            >
+              <FolderIcon style={{ fontSize: 15 }} />
+              <div>/</div>
+              <div>{folderPath}</div>
+            </div>
+          </div>
+        )}
+      </AppBar>
+      <Container
+        style={{ flexGrow: 1, marginTop: value === 0 ? "260px" : "160px" }}
+      >
+        <div>
           {value === 0 && (
             <div
-              style={{ width: "100%", maxHeight: "65vh", overflowY: "auto" }}
+              style={{ width: "100%", maxHeight: "70vh", overflowY: "auto" }}
             >
               <TableContainer component={Paper}>
                 <Table aria-label="file table" size="small">
