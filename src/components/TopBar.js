@@ -78,58 +78,59 @@ function TopBar({ savetime, setSaveTime }) {
             height: "auto",
           }}
         />
-        {window.location.pathname !== "/rushhome" && (
-          <>
-            {isEditingTitle ? (
-              <Input
-                type="text"
-                value={title}
-                autoFocus
-                onChange={handleTitleChange}
-                style={{
-                  marginLeft: "20px",
-                  color: "black",
-                  fontSize: "20px",
-                  border: "none",
-                  outline: "none",
-                  backgroundColor: "transparent",
-                }}
-              />
-            ) : (
+        {window.location.pathname !== "/rushhome" &&
+          window.location.pathname !== "/" && (
+            <>
+              {isEditingTitle ? (
+                <Input
+                  type="text"
+                  value={title}
+                  autoFocus
+                  onChange={handleTitleChange}
+                  style={{
+                    marginLeft: "20px",
+                    color: "black",
+                    fontSize: "20px",
+                    border: "none",
+                    outline: "none",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              ) : (
+                <Typography
+                  onClick={handleEditTitle}
+                  sx={{
+                    marginLeft: "20px",
+                    color: "black",
+                    fontSize: "20px",
+                    cursor: "pointer",
+                  }}
+                  variant="h6"
+                >
+                  {title}
+                </Typography>
+              )}
               <Typography
-                onClick={handleEditTitle}
                 sx={{
                   marginLeft: "20px",
                   color: "black",
-                  fontSize: "20px",
-                  cursor: "pointer",
+                  fontSize: "15px",
                 }}
                 variant="h6"
               >
-                {title}
+                Last : {savetime ? getRelativeTime(savetime) : null}
               </Typography>
-            )}
-            <Typography
-              sx={{
-                marginLeft: "20px",
-                color: "black",
-                fontSize: "15px",
-              }}
-              variant="h6"
-            >
-              Last : {savetime ? getRelativeTime(savetime) : null}
-            </Typography>
-            {isEditingTitle && (
-              <Button
-                onClick={handleConfirmTitle}
-                variant="outlined"
-                style={{ marginLeft: "10px" }}
-              >
-                확인
-              </Button>
-            )}
-          </>
-        )}
+              {isEditingTitle && (
+                <Button
+                  onClick={handleConfirmTitle}
+                  variant="outlined"
+                  style={{ marginLeft: "10px" }}
+                >
+                  확인
+                </Button>
+              )}
+            </>
+          )}
       </Toolbar>
       <Divider
         sx={{
