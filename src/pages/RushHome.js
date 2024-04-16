@@ -156,7 +156,10 @@ const RushHome = () => {
         }}
       >
         <div style={{ paddingLeft: "15px" }}>
-          <NotebookMenuBar />
+          <NotebookMenuBar
+            handleFileButtonClick={handleFileButtonClick}
+            handleFolderButtonClick={handleFolderButtonClick}
+          />
         </div>
         <Divider
           sx={{

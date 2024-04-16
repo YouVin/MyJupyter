@@ -7,6 +7,7 @@ import {
   Popover,
   Paper,
 } from "@mui/material";
+import AlertDialog from "./RushVersion"; // Alert 다이얼로그 컴포넌트를 import
 
 function NotebookMenuBar({
   handleLoadClick,
@@ -15,10 +16,12 @@ function NotebookMenuBar({
   handlePasteCell,
   deleteCell,
   selectedCellId,
+  handleFileButtonClick,
+  handleFolderButtonClick,
 }) {
+  const [open, setOpen] = useState(false); // 다이얼로그를 열기 위한 상태
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
-
   const disabledMenuItemsForRushHome = [
     "Save",
     "Download",
@@ -43,12 +46,17 @@ function NotebookMenuBar({
     return {};
   };
 
+  const createNewFile = () => {
+    window.open("/rushnote/nonamed", "_blank"); // 새 창으로 열기
+  };
+
   const getMenuItems = () => {
     if (window.location.pathname === "/rushhome") {
       return {
-        File: ["New", "Open", "Save", "Download"],
-        Settings: ["General Settings", "User Preferences"],
-        Help: ["Documentation", "About"],
+        File: ["New", "Open File", "Upload", "Save", "Download"],
+        View: ["FullScreen Toggle", "Header Toggle"],
+        Settings: ["Theme", "Language", "User Preferences"],
+        Help: ["Rush Version", "About Rush", "Markdown Reference"],
       };
     } else {
       return {
@@ -56,9 +64,22 @@ function NotebookMenuBar({
         Edit: ["Cut Cell", "Copy Cell", "Paste Cell", "Undo", "Redo"],
         Run: ["Run Selected Cell"],
         Settings: ["General Settings", "User Preferences"],
-        Help: ["Documentation", "About"],
+        Help: ["Rush Version", "About Rush", "Markdown Reference"],
       };
     }
+  };
+  const fullScreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  };
+  const markDownRef = () => {
+    window.open("https://commonmark.org/help/", "_blank");
+  };
+  const aboutRush = () => {
+    window.open("https://github.com/YouVin/MyJupyter", "_blank");
   };
 
   const handleButtonClick = (event, label) => {
@@ -82,6 +103,21 @@ function NotebookMenuBar({
       handleCopyCell();
     } else if (item === "Paste Cell") {
       handlePasteCell();
+    } else if (item === "New") {
+      createNewFile();
+    } else if (item === "Open File") {
+      handleFileButtonClick();
+    } else if (item === "Upload") {
+      handleFolderButtonClick();
+    } else if (item === "Markdown Reference") {
+      markDownRef();
+    } else if (item === "About Rush") {
+      aboutRush();
+    } else if (item === "Rush Version") {
+      setOpen(true);
+    } else if (item === "FullScreen Toggle") {
+      fullScreen();
+    } else if (item === "Header Toggle") {
     }
     setAnchorEl(null);
   };
@@ -146,6 +182,7 @@ function NotebookMenuBar({
           onClick={handleClosePopover}
         />
       )}
+      <AlertDialog open={open} handleClose={() => setOpen(false)} />
     </div>
   );
 }

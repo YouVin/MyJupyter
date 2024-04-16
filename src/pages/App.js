@@ -25,7 +25,7 @@ function App() {
             backgroundColor: "white",
             padding: "0px 0px",
             boxShadow: "none",
-            width: isLargeScreen ? "60%" : "95%", // 화면 크기에 따라 너비 조정
+            width: isLargeScreen ? "60%" : "93%", // 화면 크기에 따라 너비 조정
             marginLeft: isLargeScreen ? "20%" : "4%", // 화면 크기에 따라 왼쪽 여백 조정
             marginRight: isLargeScreen ? "20%" : "3%", // 화면 크기에 따라 오른쪽 여백 조정
           }}
