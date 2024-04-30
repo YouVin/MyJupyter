@@ -78,37 +78,37 @@ function RushNote({ setSaveData }) {
         return updatedCellItems;
       });
     } else if (selectedLanguage === "code") {
-      // 셀 상태 업데이트 함수
       try {
-        // 콘솔 오버라이딩
-        const originalConsoleLog = console.log;
-        console.log = (message) => {
-          const consoleOutput = `${message}\n`; // 콘솔 출력 내용을 변수에 저장
+        let consoleOutput = ""; // 콘솔 출력 내용을 저장할 변수
 
-          // Markdown으로 변환
-          const convertedMarkdown = marked(consoleOutput, { breaks: true });
-
-          // 셀 상태 업데이트
-          setCellItems((prevState) => {
-            const updatedCellItems = prevState.map((cell) => {
-              if (cell.id === id) {
-                return {
-                  ...cell,
-                  markdownResult: convertedMarkdown, // 콘솔 출력 내용을 결과로 저장
-                };
-              }
-              return cell;
-            });
-            return updatedCellItems;
-          });
-
-          originalConsoleLog(message); // 원래의 콘솔 로그 함수 실행
+        // console.log 메서드 오버라이드
+        const originalLog = console.log;
+        console.log = function (message) {
+          consoleOutput += message + "\n"; // 출력 내용을 캡처
+          originalLog.apply(console, arguments); // 원래의 console.log 메서드 호출
         };
 
-        // 콘솔 오버라이딩을 원래대로 복구
-        console.log = originalConsoleLog;
+        // 자바스크립트 코드 실행
+        eval(inputText); // codeToExecute에는 실행할 자바스크립트 코드가 들어가야 합니다.
+
+        // 콘솔 출력 내용을 markdownResult에 할당
+        setCellItems((prevState) => {
+          const updatedCellItems = prevState.map((cell) => {
+            if (cell.id === id) {
+              return {
+                ...cell,
+                markdownResult: consoleOutput,
+              };
+            }
+            return cell;
+          });
+          return updatedCellItems;
+        });
+
+        // console.log 메서드 원복
+        console.log = originalLog;
       } catch (error) {
-        console.error("Error occurred while executing JavaScript code:", error);
+        console.error("JavaScript 코드 실행 중 오류가 발생했습니다:", error);
       }
     } else if (selectedLanguage === "html") {
       try {

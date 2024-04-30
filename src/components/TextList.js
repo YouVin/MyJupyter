@@ -67,7 +67,7 @@ function TextList({
                   tabSize: 2,
                   useWorker: false,
                 }}
-                style={{ width: "100%", minHeight: "50px" }}
+                style={{ width: "100%", height: "50px" }}
                 onChange={handleEditorChange}
               />
             )}
@@ -90,7 +90,7 @@ function TextList({
                   tabSize: 2,
                   useWorker: false,
                 }}
-                style={{ width: "100%", minHeight: "50px" }}
+                style={{ width: "100%", height: "50px" }}
                 onChange={handleEditorChange}
               />
             )}
@@ -113,7 +113,7 @@ function TextList({
                   tabSize: 2,
                   useWorker: false,
                 }}
-                style={{ width: "100%", minHeight: "50px" }}
+                style={{ width: "100%", height: "50px" }}
                 onChange={handleEditorChange}
               />
             )}
