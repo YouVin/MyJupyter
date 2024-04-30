@@ -135,6 +135,13 @@ function RushNote({ setSaveData }) {
     }
   };
 
+  // 모든 셀을 변환하고 결과를 업데이트하는 함수
+  const runAllCells = () => {
+    cellItems.forEach((cell) => {
+      handleConvertClick(cell.id); // 각 셀에 대해 변환 함수 호출
+    });
+  };
+
   // 셀 복사 함수
   const handleCopyCell = () => {
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
@@ -376,6 +383,10 @@ function RushNote({ setSaveData }) {
       >
         <div>
           <NotebookMenuBar
+            handleTitleEdit={() => handleTitleEdit(selectedCellId)}
+            handlePauseCell={handlePauseCell}
+            addCellItem={addCellItem}
+            runAllCells={runAllCells}
             handleLoadClick={handleLoadClick}
             handleDownloadClick={handleDownloadClick}
             handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
@@ -396,7 +407,6 @@ function RushNote({ setSaveData }) {
               cellItems.find((cell) => cell.id === selectedCellId)?.inputText ||
               ""
             }
-            setMarkdownResult={setMarkdownResult} // 초기화를 위한 결과창 함수 전달
             selectedLanguage={
               cellItems.find((cell) => cell.id === selectedCellId)
                 ?.selectedLanguage || "markdown"

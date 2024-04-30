@@ -18,6 +18,10 @@ function NotebookMenuBar({
   selectedCellId,
   handleFileButtonClick,
   handleFolderButtonClick,
+  runAllCells,
+  addCellItem,
+  handlePauseCell,
+  handleTitleEdit,
 }) {
   const [open, setOpen] = useState(false); // 다이얼로그를 열기 위한 상태
   const [anchorEl, setAnchorEl] = useState(null);
@@ -53,21 +57,36 @@ function NotebookMenuBar({
   const getMenuItems = () => {
     if (window.location.pathname === "/rushhome") {
       return {
-        File: ["New", "Open File", "Upload", "Save", "Download"],
+        File: [
+          "New File",
+          "Open File",
+          "Save File",
+          "Download File ",
+          "Upload Folder",
+        ],
         View: ["FullScreen Toggle", "Header Toggle"],
-        Settings: ["Theme", "Language", "User Preferences"],
+        Settings: ["Language", "User Preferences"],
         Help: ["Rush Version", "About Rush", "Markdown Reference"],
       };
     } else {
       return {
-        File: ["New", "Open", "Save", "Download"],
-        Edit: ["Cut Cell", "Copy Cell", "Paste Cell", "Undo", "Redo"],
-        Run: ["Run Selected Cell"],
-        Settings: ["General Settings", "User Preferences"],
+        File: ["New File", "Open File", "Save File", "Download File"],
+        Edit: [
+          "Create Cell",
+          "Cut Cell",
+          "Copy Cell",
+          "Paste Cell",
+          "Rename Cell",
+          "Undo",
+          "Redo",
+        ],
+        Run: ["Run Selected Cell", "Run All Cells", "Stop Cell"],
+        Settings: ["User Preferences"],
         Help: ["Rush Version", "About Rush", "Markdown Reference"],
       };
     }
   };
+
   const fullScreen = () => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
@@ -93,9 +112,9 @@ function NotebookMenuBar({
 
   const handleMenuItemClick = (item) => {
     console.log(`Clicked: ${item}`);
-    if (item === "Download") {
+    if (item === "Download File") {
       handleDownloadClick();
-    } else if (item === "Open") {
+    } else if (item === "Open File") {
       handleLoadClick();
     } else if (item === "Cut Cell") {
       deleteCell(selectedCellId);
@@ -103,11 +122,11 @@ function NotebookMenuBar({
       handleCopyCell();
     } else if (item === "Paste Cell") {
       handlePasteCell();
-    } else if (item === "New") {
+    } else if (item === "New File") {
       createNewFile();
     } else if (item === "Open File") {
       handleFileButtonClick();
-    } else if (item === "Upload") {
+    } else if (item === "Upload Folder") {
       handleFolderButtonClick();
     } else if (item === "Markdown Reference") {
       markDownRef();
@@ -117,7 +136,14 @@ function NotebookMenuBar({
       setOpen(true);
     } else if (item === "FullScreen Toggle") {
       fullScreen();
-    } else if (item === "Header Toggle") {
+    } else if (item === "Run All Cells") {
+      runAllCells();
+    } else if (item === "Stop Cell") {
+      handlePauseCell();
+    } else if (item === "Create Cell") {
+      addCellItem();
+    } else if (item === "Rename Cell") {
+      handleTitleEdit(selectedCellId);
     }
     setAnchorEl(null);
   };

@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { List, ListItem, Paper, TextField } from "@mui/material";
+import React, { useEffect, useRef } from "react";
+import { List, ListItem, Paper } from "@mui/material";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript"; // JavaScript 모드 임포트
-import "ace-builds/src-noconflict/theme-xcode"; // xcode 테마 임포트
-import "ace-builds/src-noconflict/ext-language_tools";
+import "ace-builds/src-noconflict/theme-textmate"; // xcode 테마 임포트
 import "ace-builds/src-noconflict/mode-html"; // HTML 모드 임포트
+import "ace-builds/src-noconflict/mode-markdown"; // Markdown 모드 임포트
 
-//isActive = 활성 여부 , onSelect = 활성된 셀
-// onCodeChang = 사용자입력값
-//markdownResult=결과값, selectedLanguage = 선택언어
 function TextList({
   isActive,
   onSelect,
@@ -17,115 +14,109 @@ function TextList({
   selectedLanguage,
   inputText,
 }) {
-  const [newCodeItemText, setNewCodeItemText] = useState("");
+  const editorRef = useRef(null);
 
-  //TextField css
-  const inputStyle = {
-    minHeight: "40px",
-    overflow: "auto",
-    resize: "vertical",
+  // AceEditor의 행 수를 계산하여 높이를 설정하는 함수
+  const setEditorHeight = () => {
+    const lineHeight = 1.2; // 각 행의 평균 높이 (em)
+    const numLines = editorRef.current.editor.session.getLength(); // AceEditor의 행 수
+    const editorHeight = `${numLines * lineHeight}em`; // AceEditor의 높이 계산
+    editorRef.current.editor.container.style.height = editorHeight; // 높이 설정
   };
 
-  //드롭버튼 변경 시 작성 칸 초기화
+  // AceEditor의 행 수가 변경될 때마다 높이를 설정
   useEffect(() => {
-    // selectedLanguage가 변경될 때마다 newCodeItemText 초기화
-    setNewCodeItemText("");
-  }, [selectedLanguage]);
+    setEditorHeight();
+  }, [inputText]);
 
-  //markdown 텍스트필드
-  const handleTextFieldChange = (e) => {
-    const value = e.target.value;
-    setNewCodeItemText(value);
-    onCodeChange(value);
-  };
-  //javascript aditor필드
+  // markdown 텍스트 변경 시
   const handleEditorChange = (newValue) => {
-    setNewCodeItemText(newValue);
     onCodeChange(newValue);
-    // AceEditor의 높이를 자동으로 조절
-    const lines = newValue.split("\n").length;
-    const lineHeight = 20; // 기본적인 한 줄의 높이
-    const newHeight = lines * lineHeight;
-
-    // AceEditor의 높이를 조절하기 위한 로직
-    const aceEditor = document.querySelector(".ace_editor");
-    if (aceEditor) {
-      aceEditor.style.height = `${newHeight}px`;
-    }
   };
-  // selectedLanguage가 변경될 때 markdownResult 초기화
 
   return (
     <div
-      className="cell-item" //셀선택및해제
       onClick={onSelect}
       style={{
         borderLeft: isActive ? "1px solid blue" : "2px solid transparent",
         borderRight: isActive ? "1px solid blue" : "2px solid transparent",
-        paddingTop: "15px",
       }}
     >
       <Paper
         elevation={3}
-        style={{ padding: "16px", backgroundColor: "white" }}
+        style={{ padding: "0px ", backgroundColor: "white" }}
       >
         <List>
           <ListItem>
-            {/* 코드 작성할 리스트 아이템 */}
-            {selectedLanguage === "markdown" ? (
-              <TextField
-                fullWidth
-                multiline
-                variant="outlined"
-                label="Markdown Code"
-                value={inputText}
-                onChange={handleTextFieldChange}
-                InputProps={{ style: inputStyle }}
-              />
-            ) : selectedLanguage === "code" ? (
+            {selectedLanguage === "markdown" && (
               <AceEditor
+                ref={editorRef}
+                placeholder="Markdown 코드를 입력하세요"
+                mode="markdown"
+                theme="textmate"
+                value={inputText}
+                fontSize={15}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                  useWorker: false,
+                }}
+                style={{ width: "100%", minHeight: "50px" }}
+                onChange={handleEditorChange}
+              />
+            )}
+            {selectedLanguage === "code" && (
+              <AceEditor
+                ref={editorRef}
                 placeholder="코드를 입력해보세요"
                 mode="javascript"
-                theme="xcode"
-                onChange={handleEditorChange}
+                theme="textmate"
                 value={inputText}
-                fontSize={14}
+                fontSize={15}
                 showPrintMargin={true}
                 showGutter={true}
                 highlightActiveLine={true}
                 setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: false,
                   showLineNumbers: true,
                   tabSize: 2,
                   useWorker: false,
-                  enableSnippets: false,
-                  enableBasicAutocompletion: true,
-                  enableLiveAutocompletion: true,
                 }}
-                style={{ width: "100%", height: "16px", overflow: "hidden" }}
+                style={{ width: "100%", minHeight: "50px" }}
+                onChange={handleEditorChange}
               />
-            ) : null}
-            {selectedLanguage === "html" ? (
+            )}
+            {selectedLanguage === "html" && (
               <AceEditor
+                ref={editorRef}
                 placeholder="HTML 코드를 입력하세요"
                 mode="html"
-                theme="xcode"
-                onChange={handleEditorChange}
+                theme="textmate"
                 value={inputText}
-                fontSize={14}
+                fontSize={15}
                 showPrintMargin={true}
                 showGutter={true}
                 highlightActiveLine={true}
                 setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: false,
                   showLineNumbers: true,
                   tabSize: 2,
                   useWorker: false,
-                  enableSnippets: false,
-                  enableBasicAutocompletion: true,
-                  enableLiveAutocompletion: true,
                 }}
-                style={{ width: "100%", height: "16px", overflow: "hidden" }}
+                style={{ width: "100%", minHeight: "50px" }}
+                onChange={handleEditorChange}
               />
-            ) : null}
+            )}
           </ListItem>
           <ListItem style={{ padding: "10px 20px" }}>
             {<div dangerouslySetInnerHTML={{ __html: markdownResult }} />}

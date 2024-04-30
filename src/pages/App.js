@@ -20,14 +20,13 @@ function App() {
     <BrowserRouter>
       <Container maxWidth="lg">
         <AppBar
+          color="primary"
           position="fixed"
           style={{
-            backgroundColor: "white",
-            padding: "0px 0px",
-            boxShadow: "none",
-            width: isLargeScreen ? "60%" : "93%", // 화면 크기에 따라 너비 조정
-            marginLeft: isLargeScreen ? "20%" : "4%", // 화면 크기에 따라 왼쪽 여백 조정
-            marginRight: isLargeScreen ? "20%" : "3%", // 화면 크기에 따라 오른쪽 여백 조정
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+            width: isLargeScreen ? "60%" : "93%",
+            marginLeft: isLargeScreen ? "20%" : "4%",
+            marginRight: isLargeScreen ? "20%" : "3%",
           }}
         >
           <TopBar

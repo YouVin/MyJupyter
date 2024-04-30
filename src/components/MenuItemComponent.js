@@ -11,7 +11,6 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 function MenuItemComponent({
   selectedCellId,
   deleteCell,
-  setMarkdownResult,
   selectedLanguage,
   setSelectedLanguage,
   addCell,
@@ -22,12 +21,6 @@ function MenuItemComponent({
   handleRestartCell,
   handleSaveClick,
 }) {
-  //코드 변환 시 초기화
-  const handleLanguageChange = (newValue) => {
-    setSelectedLanguage(newValue); // 선택된 언어 업데이트
-    setMarkdownResult(""); // 결과 초기화
-  };
-
   return (
     <div>
       <Toolbar style={{ padding: 12 }}>
