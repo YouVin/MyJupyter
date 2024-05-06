@@ -155,6 +155,14 @@ const RushHome = () => {
           marginRight: isLargeScreen ? "20%" : "3%", // 화면 크기에 따라 오른쪽 여백 조정
         }}
       >
+        <Divider
+          sx={{
+            marginTop: "10px",
+            backgroundColor: "black",
+            marginLeft: "30px",
+            marginRight: "25px",
+          }}
+        />
         <div style={{ paddingLeft: "15px" }}>
           <NotebookMenuBar
             handleFileButtonClick={handleFileButtonClick}
@@ -164,7 +172,7 @@ const RushHome = () => {
         <Divider
           sx={{
             backgroundColor: "black",
-            marginLeft: "25px",
+            marginLeft: "30px",
             marginRight: "25px",
           }}
         />
@@ -178,7 +186,7 @@ const RushHome = () => {
               backgroundColor: "white",
             },
             marginLeft: "25px",
-            marginTop: "10px",
+            marginTop: "20px",
             padding: 1,
             alignItems: "center",
             minHeight: 20,
@@ -216,7 +224,7 @@ const RushHome = () => {
           <div
             style={{
               paddingLeft: "5px",
-              marginTop: "15px",
+              marginTop: "10px",
               alignItems: "center",
               marginBottom: "15px",
               marginLeft: "28px",
@@ -300,7 +308,8 @@ const RushHome = () => {
             </div>
             <div
               style={{
-                marginTop: "20px",
+                marginTop: "15px",
+                marginLeft: "5px",
                 display: "flex",
                 alignItems: "center",
                 fontSize: 14,
@@ -321,7 +330,12 @@ const RushHome = () => {
         <div>
           {value === 0 && (
             <div
-              style={{ width: "100%", maxHeight: "70vh", overflowY: "auto" }}
+              style={{
+                marginLeft: 5,
+                width: "100%",
+                maxHeight: "70vh",
+                overflowY: "auto",
+              }}
             >
               <TableContainer component={Paper}>
                 <Table aria-label="file table" size="small">

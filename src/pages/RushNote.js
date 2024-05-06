@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   AppBar,
+  Divider,
 } from "@mui/material";
 import { marked } from "marked";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -52,7 +53,15 @@ function RushNote({ setSaveData }) {
 
   //셀 변환 코드 실행 함수
   const handleConvertClick = (id) => {
+    // 선택된 셀 찾기
     const selectedCell = cellItems.find((cell) => cell.id === id);
+
+    // 선택된 셀이 없는 경우 처리
+    if (!selectedCell) {
+      alert("실행 할 셀을 선택해주세요.");
+      return; // 함수 종료
+    }
+
     const { inputText, selectedLanguage } = selectedCell;
 
     console.log("handleConvertClick called");
@@ -84,12 +93,14 @@ function RushNote({ setSaveData }) {
         // console.log 메서드 오버라이드
         const originalLog = console.log;
         console.log = function (message) {
-          consoleOutput += message + "\n"; // 출력 내용을 캡처
+          consoleOutput += message + "<br>"; // 각 메시지 뒤에 공백 추가
           originalLog.apply(console, arguments); // 원래의 console.log 메서드 호출
         };
 
         // 자바스크립트 코드 실행
         eval(inputText); // codeToExecute에는 실행할 자바스크립트 코드가 들어가야 합니다.
+        // console.log 메서드 원복
+        console.log = originalLog;
 
         // 콘솔 출력 내용을 markdownResult에 할당
         setCellItems((prevState) => {
@@ -104,9 +115,6 @@ function RushNote({ setSaveData }) {
           });
           return updatedCellItems;
         });
-
-        // console.log 메서드 원복
-        console.log = originalLog;
       } catch (error) {
         console.error("JavaScript 코드 실행 중 오류가 발생했습니다:", error);
       }
@@ -144,60 +152,90 @@ function RushNote({ setSaveData }) {
 
   // 셀 복사 함수
   const handleCopyCell = () => {
+    // 선택된 셀 찾기
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
-    console.log(selectedCell.id + " 복사 !");
-    if (selectedCell) {
-      // 클립보드에 복사
-      navigator.clipboard.writeText(selectedCell.inputText);
+
+    // 선택된 셀이 없는 경우 처리
+    if (!selectedCell) {
+      alert("복사할 셀을 선택해주세요.");
+      return; // 함수 종료
     }
+
+    // 선택된 셀이 있는 경우
+    console.log(selectedCell.id + " 복사 !");
+
+    // 클립보드에 복사
+    navigator.clipboard
+      .writeText(selectedCell.inputText)
+      .then(() => {
+        console.log("셀이 클립보드에 복사되었습니다.");
+      })
+      .catch((error) => {
+        console.error("클립보드 복사 중 오류 발생:", error);
+      });
   };
 
   // 셀 붙여넣기 함수
   const handlePasteCell = () => {
-    navigator.clipboard.readText().then((text) => {
-      const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
-      if (selectedCell) {
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        const selectedCell = cellItems.find(
+          (cell) => cell.id === selectedCellId
+        );
+
+        // 선택된 셀이 없는 경우 처리
+        if (!selectedCell) {
+          alert("붙여넣을 셀을 선택해주세요.");
+          return; // 함수 종료
+        }
+
         // 클립보드에서 읽은 텍스트를 새로운 셀로 추가
         setCellItems((prevState) => [
           ...prevState.slice(0, prevState.indexOf(selectedCell) + 1), // 선택한 셀 다음에 추가
           {
             id: prevState.length + 1,
-            inputText: selectedCell.markdownResult, // 결과 값(inputText 대신 markdownResult 사용)
-            markdownResult: marked(selectedCell.markdownResult, {
-              breaks: true,
-            }), // 마크다운으로 변환
+            inputText: text, // 클립보드에서 읽은 텍스트 사용
+            markdownResult: marked(text, { breaks: true }), // 마크다운으로 변환
             selectedLanguage: selectedCell.selectedLanguage, // 선택한 셀의 언어 설정 사용
           },
           ...prevState.slice(prevState.indexOf(selectedCell) + 1), // 나머지 셀들을 뒤에 추가
         ]);
-      }
-    });
+      })
+      .catch((error) => {
+        console.error("클립보드 읽기 중 오류 발생:", error);
+      });
   };
 
   // 셀 중단 함수
   const handlePauseCell = () => {
     const selectedCell = cellItems.find((cell) => cell.id === selectedCellId);
-    if (selectedCell) {
-      const pauseMessage = "중단되었습니다.";
-      console.log(pauseMessage); // 중단 메시지를 콘솔에 출력
 
-      // 이전에 설정된 setTimeout을 clearTimeout으로 중지시킵니다.
-      clearTimeout(pauseTimeout);
-
-      // 선택된 셀의 상태 업데이트
-      setCellItems((prevState) => {
-        const updatedCellItems = prevState.map((cell) => {
-          if (cell.id === selectedCellId) {
-            return {
-              ...cell,
-              markdownResult: pauseMessage, // 셀의 결과 메시지 업데이트
-            };
-          }
-          return cell;
-        });
-        return updatedCellItems;
-      });
+    // 선택된 셀이 없는 경우 처리
+    if (!selectedCell) {
+      alert("중단할 셀을 선택해주세요.");
+      return; // 함수 종료
     }
+
+    const pauseMessage = "중단되었습니다.";
+    console.log(pauseMessage); // 중단 메시지를 콘솔에 출력
+
+    // 이전에 설정된 setTimeout을 clearTimeout으로 중지시킵니다.
+    clearTimeout(pauseTimeout);
+
+    // 선택된 셀의 상태 업데이트
+    setCellItems((prevState) => {
+      const updatedCellItems = prevState.map((cell) => {
+        if (cell.id === selectedCellId) {
+          return {
+            ...cell,
+            markdownResult: pauseMessage, // 셀의 결과 메시지 업데이트
+          };
+        }
+        return cell;
+      });
+      return updatedCellItems;
+    });
   };
 
   //셀 추가, 관리 함수
@@ -220,41 +258,51 @@ function RushNote({ setSaveData }) {
   const handleSaveClick = () => {
     const now = new Date();
     const cellItemCount = cellItems.length;
-    const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
-    console.log(currentTitle);
-    if (currentTitle) {
-      // 현재 상태를 JSON으로 변환하여 저장합니다.
-      const jsonState = JSON.stringify({
-        cellItems: cellItems,
-        title: localStorage.getItem("title"),
-        saveTime: now, // 현재 시간을 저장합니다.
-      });
-      localStorage.setItem(`${currentTitle}`, jsonState);
+    const currentTitle = localStorage.getItem("title");
 
-      setSaveTime(now);
-      setSaveData(now); // savetime을 저장 데이터로 업데이트
-      // 기록 남기기
-      const historyItem = {
-        title: currentTitle,
-        cellItemCount: cellItemCount,
-        saveTime: now,
-      };
-
-      // 기존에 저장된 히스토리 내용 가져오기
-      const savedHistory =
-        JSON.parse(localStorage.getItem("savedHistory")) || [];
-
-      // 새로운 기록 추가
-      savedHistory.push(historyItem);
-
-      // 로컬 스토리지에 저장
-      localStorage.setItem("savedHistory", JSON.stringify(savedHistory));
+    // title이 없을 때 경고창 표시
+    if (!currentTitle) {
+      alert("저장할 파일의 제목을 입력해주세요.");
+      return; // 함수 종료
     }
+
+    // 현재 상태를 JSON으로 변환하여 저장합니다.
+    const jsonState = JSON.stringify({
+      cellItems: cellItems,
+      title: localStorage.getItem("title"),
+      saveTime: now, // 현재 시간을 저장합니다.
+    });
+    localStorage.setItem(`${currentTitle}`, jsonState);
+
+    setSaveTime(now);
+    setSaveData(now); // savetime을 저장 데이터로 업데이트
+    // 기록 남기기
+    const historyItem = {
+      title: currentTitle,
+      cellItemCount: cellItemCount,
+      saveTime: now,
+    };
+
+    // 기존에 저장된 히스토리 내용 가져오기
+    const savedHistory = JSON.parse(localStorage.getItem("savedHistory")) || [];
+
+    // 새로운 기록 추가
+    savedHistory.push(historyItem);
+
+    // 로컬 스토리지에 저장
+    localStorage.setItem("savedHistory", JSON.stringify(savedHistory));
   };
 
   //파일 불러오기
   const handleLoadClick = () => {
     const fileId = localStorage.getItem("title"); // 불러올 파일의 ID 설정
+
+    // 파일 ID가 없는 경우 처리
+    if (!fileId) {
+      alert("불러올 파일의 제목을 입력해주세요.");
+      return; // 함수 종료
+    }
+
     console.log(fileId);
 
     // 로컬 스토리지에서 데이터 불러오기
@@ -308,7 +356,7 @@ function RushNote({ setSaveData }) {
   // 셀 삭제 로직
   const deleteCell = (idToDelete) => {
     if (idToDelete === null) {
-      console.log("cellID = NULL");
+      alert("삭제를 셀을 선택해주세요.");
       return; // 선택된 셀이 없을 경우 함수 종료
     }
     const updatedCells = cellItems.filter((cell) => cell.id !== idToDelete);
@@ -318,9 +366,22 @@ function RushNote({ setSaveData }) {
   // 파일 다운로드 함수
   const handleDownloadClick = () => {
     const currentTitle = localStorage.getItem("title"); // 불러올 파일의 ID 설정
+
+    // 파일 제목이 없는 경우 처리
+    if (!currentTitle) {
+      alert("다운로드할 파일의 제목을 입력해주세요.");
+      return; // 함수 종료
+    }
+
     const filename = `${currentTitle}.irn`; // 파일명 설정
 
     const fileContent = localStorage.getItem(currentTitle); // 현재 title을 키로 사용하여 해당 값을 가져옴
+
+    // 파일 내용이 없는 경우 처리
+    if (!fileContent) {
+      console.error(`File with title ${currentTitle} not found.`);
+      return; // 함수 종료
+    }
 
     // Blob 객체 생성
     const blob = new Blob([fileContent], { type: "application/json" });
@@ -352,6 +413,7 @@ function RushNote({ setSaveData }) {
       return prevState;
     });
   };
+
   // 제목 편집 함수
   const handleTitleEdit = (id) => {
     setEditingTitle(id); // 편집 중인 아이템 ID 설정
@@ -366,7 +428,6 @@ function RushNote({ setSaveData }) {
     );
     setEditingTitle(null); // 편집 종료
   };
-
   return (
     <Container maxWidth="lg">
       <AppBar
@@ -381,7 +442,15 @@ function RushNote({ setSaveData }) {
           marginRight: isLargeScreen ? "20%" : "2%", // 화면 크기에 따라 오른쪽 여백 조정
         }}
       >
-        <div>
+        <Divider
+          sx={{
+            marginTop: "10px",
+            backgroundColor: "black",
+            marginLeft: isLargeScreen ? "10px" : "20px",
+            marginRight: "25px",
+          }}
+        />
+        <div style={{ marginLeft: isLargeScreen ? "0px" : "10px" }}>
           <NotebookMenuBar
             handleTitleEdit={() => handleTitleEdit(selectedCellId)}
             handlePauseCell={handlePauseCell}
@@ -393,9 +462,17 @@ function RushNote({ setSaveData }) {
             handlePasteCell={handlePasteCell} // 셀 붙여넣기 함수 전달
             deleteCell={() => deleteCell(selectedCellId)} // 셀 삭제 함수 전달
             selectedCellId={selectedCellId}
+            handleSaveClick={handleSaveClick}
           />
         </div>
-        <div>
+        <Divider
+          sx={{
+            backgroundColor: "black",
+            marginLeft: isLargeScreen ? "10px" : "20px",
+            marginRight: "25px",
+          }}
+        />
+        <div style={{ marginLeft: isLargeScreen ? "0px" : "10px" }}>
           <MenuItemComponent
             addCell={addCellItem}
             handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
@@ -431,7 +508,9 @@ function RushNote({ setSaveData }) {
           />
         </div>
       </AppBar>
-      <div style={{ marginTop: 180 }}>
+      <div
+        style={{ marginTop: 180, marginLeft: isLargeScreen ? "0px" : "10px" }}
+      >
         {cellItems.map((item) => (
           <Accordion key={item.id} onChange={() => handleCellSelect(item.id)}>
             <AccordionSummary
@@ -464,7 +543,7 @@ function RushNote({ setSaveData }) {
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <span
                       style={{
-                        marginLeft: isLargeScreen ? 18 : 8,
+                        marginLeft: isLargeScreen ? 10 : 8,
                         marginRight: 40,
                         fontWeight: 500,
                       }}

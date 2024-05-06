@@ -36,7 +36,7 @@ export default function AlertDialog({ open, handleClose }) {
           <DialogContentText
             style={{ color: "gray", fontSize: 14, marginTop: 10 }}
           >
-            Version: 1.0.1
+            Version: 1.0.0
           </DialogContentText>
           <DialogContentText
             style={{

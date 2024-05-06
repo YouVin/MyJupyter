@@ -8,7 +8,6 @@ import {
   Paper,
 } from "@mui/material";
 import AlertDialog from "./RushVersion"; // Alert 다이얼로그 컴포넌트를 import
-
 function NotebookMenuBar({
   handleLoadClick,
   handleDownloadClick,
@@ -22,19 +21,20 @@ function NotebookMenuBar({
   addCellItem,
   handlePauseCell,
   handleTitleEdit,
+  handleSaveClick,
 }) {
   const [open, setOpen] = useState(false); // 다이얼로그를 열기 위한 상태
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorLabel, setAnchorLabel] = useState(null);
   const disabledMenuItemsForRushHome = [
-    "Save",
-    "Download",
+    "Save File",
+    "Open File",
+    "Download File",
     "Cut Cell",
     "Copy Cell",
     "Paste Cell",
     "Zoom In",
   ]; // RushHome에서 비활성화 할 항목
-
   const getMenuItemsForCurrentPath = () => {
     const menuItems = getMenuItems(); // getMenuItems 호출
     if (window.location.pathname === "/rushhome") {
@@ -49,19 +49,17 @@ function NotebookMenuBar({
     }
     return {};
   };
-
   const createNewFile = () => {
     window.open("/rushnote/nonamed", "_blank"); // 새 창으로 열기
   };
-
   const getMenuItems = () => {
     if (window.location.pathname === "/rushhome") {
       return {
         File: [
           "New File",
-          "Open File",
           "Save File",
-          "Download File ",
+          "Download File",
+          "Open File ",
           "Upload Folder",
         ],
         View: ["FullScreen Toggle", "Header Toggle"],
@@ -86,7 +84,6 @@ function NotebookMenuBar({
       };
     }
   };
-
   const fullScreen = () => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
@@ -100,21 +97,19 @@ function NotebookMenuBar({
   const aboutRush = () => {
     window.open("https://github.com/YouVin/MyJupyter", "_blank");
   };
-
   const handleButtonClick = (event, label) => {
     setAnchorLabel(label);
     setAnchorEl(event.currentTarget);
   };
-
   const handleClosePopover = () => {
     setAnchorEl(null);
   };
-
   const handleMenuItemClick = (item) => {
     console.log(`Clicked: ${item}`);
     if (item === "Download File") {
       handleDownloadClick();
     } else if (item === "Open File") {
+      //하나 고치기
       handleLoadClick();
     } else if (item === "Cut Cell") {
       deleteCell(selectedCellId);
@@ -124,7 +119,7 @@ function NotebookMenuBar({
       handlePasteCell();
     } else if (item === "New File") {
       createNewFile();
-    } else if (item === "Open File") {
+    } else if (item === "Open File ") {
       handleFileButtonClick();
     } else if (item === "Upload Folder") {
       handleFolderButtonClick();
@@ -144,10 +139,12 @@ function NotebookMenuBar({
       addCellItem();
     } else if (item === "Rename Cell") {
       handleTitleEdit(selectedCellId);
+    } else if (item === "Save File") {
+      handleSaveClick();
+    } else if (item === "Run Selected Cell") {
     }
     setAnchorEl(null);
   };
-
   return (
     <div>
       {Object.keys(getMenuItemsForCurrentPath()).map((label, index) => (
@@ -161,8 +158,8 @@ function NotebookMenuBar({
           {label}
         </Button>
       ))}
-
       <Popover
+        style={{ marginLeft: 10 }}
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClosePopover}
@@ -193,24 +190,8 @@ function NotebookMenuBar({
           </List>
         </Paper>
       </Popover>
-
-      {anchorEl && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            zIndex: -1,
-            maxWidth: "200",
-          }}
-          onClick={handleClosePopover}
-        />
-      )}
       <AlertDialog open={open} handleClose={() => setOpen(false)} />
     </div>
   );
 }
-
 export default NotebookMenuBar;
