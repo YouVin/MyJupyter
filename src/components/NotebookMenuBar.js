@@ -109,7 +109,6 @@ function NotebookMenuBar({
     if (item === "Download File") {
       handleDownloadClick();
     } else if (item === "Open File") {
-      //하나 고치기
       handleLoadClick();
     } else if (item === "Cut Cell") {
       deleteCell(selectedCellId);

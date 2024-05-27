@@ -71,11 +71,12 @@ function TopBar({ savetime, setSaveTime }) {
     <div>
       <Toolbar sx={{ backgroundColor: "white" }}>
         <img
-          src="/logo.jpg"
+          src="/logo.png"
           alt="로고"
           style={{
-            maxWidth: "90px",
+            width: "100px",
             height: "auto",
+            objectFit: "contain",
           }}
         />
         {window.location.pathname !== "/rushhome" &&

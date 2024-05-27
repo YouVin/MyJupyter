@@ -148,7 +148,7 @@ const RushHome = () => {
         style={{
           backgroundColor: "white",
           color: "black",
-          marginTop: 63,
+          marginTop: 80,
           boxShadow: "none",
           width: isLargeScreen ? "60%" : "93%", // 화면 크기에 따라 너비 조정
           marginLeft: isLargeScreen ? "20%" : "4%", // 화면 크기에 따라 왼쪽 여백 조정
@@ -159,11 +159,11 @@ const RushHome = () => {
           sx={{
             marginTop: "10px",
             backgroundColor: "black",
-            marginLeft: "30px",
+            marginLeft: "40px",
             marginRight: "25px",
           }}
         />
-        <div style={{ paddingLeft: "15px" }}>
+        <div style={{ paddingLeft: "30px" }}>
           <NotebookMenuBar
             handleFileButtonClick={handleFileButtonClick}
             handleFolderButtonClick={handleFolderButtonClick}
@@ -172,7 +172,7 @@ const RushHome = () => {
         <Divider
           sx={{
             backgroundColor: "black",
-            marginLeft: "30px",
+            marginLeft: "40px",
             marginRight: "25px",
           }}
         />
@@ -185,7 +185,7 @@ const RushHome = () => {
             "& .MuiTabs-indicator": {
               backgroundColor: "white",
             },
-            marginLeft: "25px",
+            marginLeft: "35px",
             marginTop: "20px",
             padding: 1,
             alignItems: "center",
@@ -227,7 +227,7 @@ const RushHome = () => {
               marginTop: "10px",
               alignItems: "center",
               marginBottom: "15px",
-              marginLeft: "28px",
+              marginLeft: "35px",
             }}
           >
             <div
@@ -331,7 +331,7 @@ const RushHome = () => {
           {value === 0 && (
             <div
               style={{
-                marginLeft: 5,
+                marginLeft: isLargeScreen ? 5 : 15,
                 width: "100%",
                 maxHeight: "70vh",
                 overflowY: "auto",
@@ -397,8 +397,9 @@ const RushHome = () => {
         {value === 1 && (
           <div
             style={{
+              marginLeft: isLargeScreen ? 15 : 25,
               paddingLeft: "5px",
-              marginTop: "15px",
+              marginTop: "30px",
               alignItems: "center",
               marginBottom: "15px",
             }}

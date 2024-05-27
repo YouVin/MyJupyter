@@ -85,10 +85,10 @@ const HistoryPage = () => {
   return (
     <div>
       <Typography variant="h5" gutterBottom style={{ marginTop: 20 }}>
-        History
+        HISTORY
       </Typography>
       <Divider sx={{ backgroundColor: "rgba(0, 0, 51, 1)", marginTop: 2 }} />
-      <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 5 }}>
+      <Paper elevation={0} sx={{ boxShadow: "none", marginTop: 2 }}>
         {Object.entries(
           paginatedItems.reduce((acc, item) => {
             const date = new Date(item.saveTime).toLocaleDateString();

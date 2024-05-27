@@ -433,7 +433,7 @@ function RushNote({ setSaveData }) {
       <AppBar
         position="fixed"
         style={{
-          marginTop: 62,
+          marginTop: 80,
           backgroundColor: "white",
           padding: "0px 0px",
           boxShadow: "none",
@@ -446,11 +446,11 @@ function RushNote({ setSaveData }) {
           sx={{
             marginTop: "10px",
             backgroundColor: "black",
-            marginLeft: isLargeScreen ? "10px" : "20px",
+            marginLeft: isLargeScreen ? "20px" : "25px",
             marginRight: "25px",
           }}
         />
-        <div style={{ marginLeft: isLargeScreen ? "0px" : "10px" }}>
+        <div style={{ marginLeft: isLargeScreen ? "10px" : "15px" }}>
           <NotebookMenuBar
             handleTitleEdit={() => handleTitleEdit(selectedCellId)}
             handlePauseCell={handlePauseCell}
@@ -468,11 +468,11 @@ function RushNote({ setSaveData }) {
         <Divider
           sx={{
             backgroundColor: "black",
-            marginLeft: isLargeScreen ? "10px" : "20px",
+            marginLeft: isLargeScreen ? "20px" : "25px",
             marginRight: "25px",
           }}
         />
-        <div style={{ marginLeft: isLargeScreen ? "0px" : "10px" }}>
+        <div style={{ marginLeft: isLargeScreen ? "10px" : "15px" }}>
           <MenuItemComponent
             addCell={addCellItem}
             handleCopyCell={handleCopyCell} // 셀 복사 함수 전달
@@ -509,7 +509,7 @@ function RushNote({ setSaveData }) {
         </div>
       </AppBar>
       <div
-        style={{ marginTop: 180, marginLeft: isLargeScreen ? "0px" : "10px" }}
+        style={{ marginTop: 200, marginLeft: isLargeScreen ? "10px" : "15px" }}
       >
         {cellItems.map((item) => (
           <Accordion key={item.id} onChange={() => handleCellSelect(item.id)}>
